@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.gm.gmall.product.mapper.SpuSaleAttrMapper">
 
-    <resultMap id="BaseResultMap" type="com.gm.gmall.product.domain.SpuSaleAttr">
+    <resultMap id="BaseResultMap" type="com.gm.gmall.model.product.SpuSaleAttr">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="spuId" column="spu_id" jdbcType="BIGINT"/>
             <result property="baseSaleAttrId" column="base_sale_attr_id" jdbcType="BIGINT"/>

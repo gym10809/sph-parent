@@ -2,6 +2,7 @@ package com.gm.gmall.product.controller;
 
 import com.gm.gmall.common.result.Result;
 import com.gm.gmall.model.product.BaseAttrInfo;
+import com.gm.gmall.model.product.BaseAttrValue;
 import com.gm.gmall.product.service.BaseAttrInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -33,10 +34,28 @@ public class BaseAttrController {
         return Result.ok(list);
     }
 
+    /**
+     * 新增或修改属性对应的属性值
+     * @param baseAttrInfo
+     * @return
+     */
     @PostMapping("/saveAttrInfo")
     public Result saveAttrInfo(@RequestBody BaseAttrInfo baseAttrInfo){
         baseAttrInfoService.saveAttrInfo(baseAttrInfo);
         return Result.ok();
     }
+
+    /**
+     * 通过平台属性id获取对应的属性值
+     * @param attrId
+     * @return
+     */
+    @GetMapping("/getAttrValueList/{attrId}")
+    public Result getAttrValueList(@PathVariable("attrId")Integer attrId ){
+        List<BaseAttrValue> list=baseAttrInfoService.getAttrValue(attrId);
+
+        return Result.ok(list);
+    }
+
 
 }

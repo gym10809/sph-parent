@@ -3,6 +3,9 @@ package com.gm.gmall.product.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gm.gmall.model.product.BaseCategory1;
+import com.gm.gmall.model.to.IndexTreeTo;
+
+import java.util.List;
 
 /**
 * @author Administrator
@@ -11,4 +14,5 @@ import com.gm.gmall.model.product.BaseCategory1;
 */
 public interface BaseCategory1Service extends IService<BaseCategory1> {
 
+    List<IndexTreeTo> indexTree();
 }

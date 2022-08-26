@@ -3,6 +3,10 @@ package com.gm.gmall.product.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.gm.gmall.model.product.BaseCategory1;
+import com.gm.gmall.model.to.CategoryViewTo;
+import com.gm.gmall.model.to.IndexTreeTo;
+
+import java.util.List;
 
 /**
 * @author Administrator
@@ -11,6 +15,8 @@ import com.gm.gmall.model.product.BaseCategory1;
 * @Entity com.gm.gmall.product.domain.BaseCategory1
 */
 public interface BaseCategory1Mapper extends BaseMapper<BaseCategory1> {
+
+    List<IndexTreeTo> indexTree();
 
 }
 

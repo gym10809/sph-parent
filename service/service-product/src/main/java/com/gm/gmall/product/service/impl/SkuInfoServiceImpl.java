@@ -1,20 +1,21 @@
 package com.gm.gmall.product.service.impl;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.gm.gmall.model.product.SkuAttrValue;
-import com.gm.gmall.model.product.SkuImage;
-import com.gm.gmall.model.product.SkuInfo;
-import com.gm.gmall.model.product.SkuSaleAttrValue;
+import com.gm.gmall.model.product.*;
+import com.gm.gmall.model.to.CategoryViewTo;
+import com.gm.gmall.model.to.SkuDetailTo;
+import com.gm.gmall.product.mapper.BaseCategory1Mapper;
+import com.gm.gmall.product.mapper.BaseCategory3Mapper;
 import com.gm.gmall.product.mapper.SkuInfoMapper;
-import com.gm.gmall.product.service.SkuAttrValueService;
-import com.gm.gmall.product.service.SkuImageService;
-import com.gm.gmall.product.service.SkuInfoService;
-import com.gm.gmall.product.service.SkuSaleAttrValueService;
+import com.gm.gmall.product.mapper.SpuInfoMapper;
+import com.gm.gmall.product.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -33,6 +34,10 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
     SkuAttrValueService attrValueService;
     @Autowired
     SkuSaleAttrValueService saleAttrValueService;
+    @Autowired
+    BaseCategory3Mapper category3Mapper;
+    @Autowired
+    SpuSaleAttrService spuSaleAttrService;
 
     @Transactional
     @Override
@@ -72,6 +77,31 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
     public void cancelSale(Long skuId) {
 
         skuInfoMapper.updateBySkuId(skuId,0);
+    }
+
+    @Override
+    public SkuDetailTo getDetail(Integer skuId) {
+        SkuDetailTo skuDetailTo=new SkuDetailTo();
+        //查询skuInfo
+        SkuInfo skuInfo = skuInfoMapper.selectById(skuId);
+        //商品（sku）的图片存放进skuinfo中
+        LambdaQueryWrapper<SkuImage> queryWrapper=new LambdaQueryWrapper<>();
+        queryWrapper.eq(SkuImage::getSkuId,skuId);
+        List<SkuImage> skuImages = imageService.list(queryWrapper);
+        skuInfo.setSkuImageList(skuImages);
+
+        skuDetailTo.setSkuInfo(skuInfo);
+        //商品（sku）所属的完整分类信息
+       CategoryViewTo categoryViewTo= category3Mapper.getCategoryView(skuInfo.getCategory3Id());
+       skuDetailTo.setCategoryView(categoryViewTo);
+        //价格查询
+        BigDecimal price = skuInfo.getPrice();
+        skuDetailTo.setPrice(price);
+        //查询当前sku对应的spu所有销售属性名和值（排序）并且标记当前sku属于哪一种组合
+        Long spuId = skuInfo.getSpuId();
+        List<SpuSaleAttr> spuSaleAttrList= spuSaleAttrService.getAttrAndSale(spuId,skuId);
+        skuDetailTo.setSpuSaleAttrList(spuSaleAttrList);
+        return skuDetailTo;
     }
 }
 

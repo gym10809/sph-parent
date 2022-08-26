@@ -38,5 +38,6 @@ public class SpuSaleAttr extends BaseEntity {
 	@TableField(exist = false)
 	List<SpuSaleAttrValue> spuSaleAttrValueList;
 
+
 }
 

@@ -5,11 +5,31 @@
 <mapper namespace="com.gm.gmall.product.mapper.BaseCategory1Mapper">
 
     <resultMap id="BaseResultMap" type="com.gm.gmall.model.product.BaseCategory1">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="name" column="name" jdbcType="VARCHAR"/>
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,name
     </sql>
+    <resultMap id="indexTree" type="com.gm.gmall.model.to.IndexTreeTo" >
+        <id column="id" property="categoryId"></id>
+        <result column="name" property="categoryName"></result>
+        <collection property="categoryChild" ofType="com.gm.gmall.model.to.IndexTreeTo" >
+            <id property="categoryId" column="b2id"></id>
+            <result property="categoryName" column="b2name"></result>
+            <collection property="categoryChild" ofType="com.gm.gmall.model.to.IndexTreeTo">
+                <id column="b3id" property="categoryId"></id>
+                <result property="categoryName" column="b3name"></result>
+            </collection>
+        </collection>
+    </resultMap>
+    <select id="indexTree" resultMap="indexTree">
+        SELECT b1.*,
+               b2.`id` b2id, b2.`name` b2name,
+               b3.`id` b3id, b3.`name` b3name
+        FROM base_category1 b1
+        LEFT JOIN base_category2 b2 ON b1.`id` = b2.`category1_id`
+        LEFT JOIN base_category3 b3 ON b2.`id` = b3.`category2_id`
+    </select>
 </mapper>

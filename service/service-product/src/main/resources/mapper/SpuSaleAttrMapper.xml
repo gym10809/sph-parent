@@ -29,4 +29,14 @@
            ssa.base_sale_attr_id=ssav.base_sale_attr_id
         where ssa.spu_id=#{spuId}
     </select>
+    <select id="getAttrAndSale" resultMap="SaleAndValue">
+        SELECT ssa.*,ssav.sale_attr_value_name,ssav.id vid ,IF(skav.sale_attr_value_id IS NULL ,'0','1') AS is_checked
+        FROM spu_sale_attr ssa
+                 LEFT JOIN spu_sale_attr_value ssav
+                           ON ssa.spu_id = ssav.spu_id AND ssa.base_sale_attr_id = ssav.base_sale_attr_id
+                 LEFT JOIN sku_sale_attr_value skav
+                           ON ssav.id = skav.sale_attr_value_id AND skav.sku_id = #{skuId}
+        WHERE ssa.spu_id = #{spuId}
+        ORDER BY ssa.id
+    </select>
 </mapper>

@@ -13,4 +13,13 @@
     <sql id="Base_Column_List">
         id,name,category2_id
     </sql>
+    <select id="getCategoryView" resultType="com.gm.gmall.model.to.CategoryViewTo">
+        SELECT b3.id category3Id,b3.name category3Name,
+               b2.id category2Id,b2.name category2Name,
+               b1.id category1Id,b1.name category1Name
+        FROM base_category3 b3
+         LEFT JOIN base_category2 b2 ON b3.category2_id = b2.id
+         LEFT JOIN base_category1 b1 ON b1.id = b2.category1_id
+        WHERE b3.id =#{category3Id}
+    </select>
 </mapper>

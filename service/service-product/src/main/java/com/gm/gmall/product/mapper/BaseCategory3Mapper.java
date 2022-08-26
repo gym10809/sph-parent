@@ -3,6 +3,7 @@ package com.gm.gmall.product.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.gm.gmall.model.product.BaseCategory3;
+import com.gm.gmall.model.to.CategoryViewTo;
 
 /**
 * @author Administrator
@@ -12,6 +13,7 @@ import com.gm.gmall.model.product.BaseCategory3;
 */
 public interface BaseCategory3Mapper extends BaseMapper<BaseCategory3> {
 
+    CategoryViewTo getCategoryView(Long category3Id);
 }
 
 

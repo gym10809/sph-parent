@@ -7,6 +7,8 @@ import com.gm.gmall.product.service.BaseTrademarkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * @author gym
  * @create 2022/8/23 0023 21:08
@@ -60,6 +62,12 @@ public class BaseTrademarkController {
     public Result delete(@PathVariable("id")Integer id){
         baseTrademarkService.removeById(id);
         return Result.ok();
+    }
+
+    @GetMapping("/baseTrademark/getTrademarkList")
+    public Result getTrademarkList(){
+        List<BaseTrademark> list = baseTrademarkService.list();
+        return Result.ok(list);
     }
 
 }

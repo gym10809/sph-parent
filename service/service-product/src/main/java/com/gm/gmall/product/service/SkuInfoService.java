@@ -11,4 +11,8 @@ import com.gm.gmall.model.product.SkuInfo;
 */
 public interface SkuInfoService extends IService<SkuInfo> {
 
+    void saveSkuInfo(SkuInfo skuInfo);
+
+    void onSale(Long skuId);
+    void cancelSale(Long skuId);
 }

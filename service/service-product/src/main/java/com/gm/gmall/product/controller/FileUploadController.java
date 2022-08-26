@@ -3,10 +3,13 @@ package com.gm.gmall.product.controller;
 
 import com.gm.gmall.common.result.Result;
 
+import com.gm.gmall.product.config.minio.MinioAutoConfig;
+import com.gm.gmall.product.config.minio.MinioProperties;
 import io.minio.BucketExistsArgs;
 import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,14 +30,18 @@ import java.util.UUID;
 @RequestMapping("/admin/product")
 public class FileUploadController {
 
-    @Value("${minio.endpoint}")
-    private String endpoint; //
-    @Value("${minio.accessKey}")
-    private String accessKey;
-    @Value("${minio.secretKey}")
-    private String secretKey;
-    @Value("${minio.bucketName}")
-    private String bucketName;
+//    @Value("${minio.endpoint}")
+//    private String endpoint; //
+//    @Value("${minio.accessKey}")
+//    private String accessKey;
+//    @Value("${minio.secretKey}")
+//    private String secretKey;
+//    @Value("${minio.bucketName}")
+//    private String bucketName;
+    @Autowired
+    MinioAutoConfig minioAutoConfig;
+    @Autowired
+    MinioProperties minioProperties;
     /**
      * 头像上传至minio
      * @param file
@@ -42,37 +49,38 @@ public class FileUploadController {
      */
     @PostMapping("/fileUpload")
     public Result  fileUpload(@RequestPart("file")MultipartFile file) throws Exception{
-        // // 使用MinIO服务的URL，端口，Access key和Secret key创建一个MinioClient对象
-        MinioClient minioClient =
-                MinioClient.builder()
-                        .endpoint(endpoint)
-                        .credentials(accessKey, secretKey)
-                        .build();
-        //  // 检查存储桶是否已经存在
-        //      boolean isExist = minioClient.bucketExists("asiatrip");
-        //      if(isExist) {
-        //        System.out.println("Bucket already exists.");
-        //      } else {
-        //        // 创建一个名为asiatrip的存储桶，用于存储照片的zip文件。
-        //        minioClient.makeBucket("asiatrip");
-        //      }
-        //                        .build());
-        boolean b = minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
-        if (!b){
-            minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
-        }
+//        // // 使用MinIO服务的URL，端口，Access key和Secret key创建一个MinioClient对象
+//        MinioClient minioClient =
+//                MinioClient.builder()
+//                        .endpoint(endpoint)
+//                        .credentials(accessKey, secretKey)
+//                        .build();
+//        //  // 检查存储桶是否已经存在
+//        //      boolean isExist = minioClient.bucketExists("asiatrip");
+//        //      if(isExist) {
+//        //        System.out.println("Bucket already exists.");
+//        //      } else {
+//        //        // 创建一个名为asiatrip的存储桶，用于存储照片的zip文件。
+//        //        minioClient.makeBucket("asiatrip");
+//        //      }
+//        //                        .build());
+//        boolean b = minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
+//        if (!b){
+//            minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
+//        }
         // 使用putObject上传一个文件到存储桶中
         // minioClient.putObject(
         //                PutObjectArgs.builder().bucket("my-bucketname").object("my-objectname").stream(
         //                                bais, bais.available(), -1)
+        MinioClient minioClient = minioAutoConfig.minioClient();
         InputStream inputStream = file.getInputStream();
         String objectName= new Date().toString()+ UUID.randomUUID();//文件名
         //上传文件
         minioClient.putObject(
-                PutObjectArgs.builder().bucket(bucketName).object(objectName).stream(
+                PutObjectArgs.builder().bucket(minioProperties.getBucketName()).object(objectName).stream(
                                 inputStream, file.getSize(),-1).contentType(file.getContentType())
                         .build());
-            String url=endpoint+"/"+bucketName+"/"+objectName;
+            String url=minioProperties.getEndpoint()+"/"+minioProperties.getBucketName()+"/"+objectName;
         System.out.println(url);
         return Result.ok(url);
     }

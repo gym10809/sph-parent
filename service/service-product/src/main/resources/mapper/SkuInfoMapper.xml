@@ -23,4 +23,7 @@
         tm_id,category3_id,sku_default_img,
         is_sale
     </sql>
+    <update id="updateBySkuId">
+        update sku_info set is_sale=#{isSale} where id=#{skuId}
+    </update>
 </mapper>

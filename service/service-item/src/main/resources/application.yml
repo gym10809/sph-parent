@@ -7,3 +7,10 @@ spring:
       type: web
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+
+thread:
+  param:
+    core: 4
+    max: 8
+    queueSize: 100
+    keepAliveTime: 300

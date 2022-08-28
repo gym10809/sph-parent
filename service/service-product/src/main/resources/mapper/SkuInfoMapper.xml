@@ -26,4 +26,15 @@
     <update id="updateBySkuId">
         update sku_info set is_sale=#{isSale} where id=#{skuId}
     </update>
+    <select id="getSkuSaleAndValue" resultType="com.gm.gmall.model.to.SkuSaleValueTo">
+        SELECT short.sku_id,GROUP_CONCAT(DISTINCT id ORDER BY id ASC SEPARATOR '|' ) values_sku
+        FROM (SELECT si.id sku_id ,ssav.id , ssav.base_sale_attr_id
+              FROM sku_info si
+                       LEFT JOIN sku_sale_attr_value skuv ON si.id = skuv.sku_id
+                       LEFT JOIN spu_sale_attr_value ssav ON ssav.id = skuv.sale_attr_value_id
+              WHERE si.spu_id = #{spuId} ORDER BY si.id,ssav.base_sale_attr_id
+             ) short
+        GROUP BY short.sku_id
+
+    </select>
 </mapper>

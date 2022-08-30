@@ -33,4 +33,9 @@ public interface SkuInfoService extends IService<SkuInfo> {
     CategoryViewTo getCategoryView(Long category3Id);
 
     String getValuesSkuJson(Long spuId);
+
+    void setBitMap();
+
+    List<Long> getAllIds();
+
 }

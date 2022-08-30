@@ -3,21 +3,18 @@ package com.gm.gmall.product.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.gm.gmall.common.util.Object2Json;
+import com.gm.gmall.common.util.Jsons;
 import com.gm.gmall.model.product.*;
 import com.gm.gmall.model.to.CategoryViewTo;
-import com.gm.gmall.model.to.SkuDetailTo;
-import com.gm.gmall.model.to.SkuSaleValueTo;
-import com.gm.gmall.product.mapper.BaseCategory1Mapper;
 import com.gm.gmall.product.mapper.BaseCategory3Mapper;
 import com.gm.gmall.product.mapper.SkuInfoMapper;
-import com.gm.gmall.product.mapper.SpuInfoMapper;
 import com.gm.gmall.product.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -105,7 +102,7 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
 //        skuDetailTo.setSpuSaleAttrList(spuSaleAttrList);
 //        //封装sku对应的spu的所有销售属性和值成一个json对象
 //      List<SkuSaleValueTo> list= skuInfoMapper.getSkuSaleAndValue(spuId);
-//        String s = Object2Json.toJson(list);
+//        String s = Jsons.toJson(list);
 //        skuDetailTo.setValuesSkuJson(s);
 //        return skuDetailTo;
 //    }
@@ -136,7 +133,24 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
 
     @Override
     public String getValuesSkuJson(Long spuId) {
-        return Object2Json.toJson(skuInfoMapper.getSkuSaleAndValue(spuId));
+        return Jsons.toJson(skuInfoMapper.getSkuSaleAndValue(spuId));
+
+    }
+    @Autowired
+    StringRedisTemplate redisTemplate;
+    @Override
+    public void setBitMap() {
+       List<Long>list= skuInfoMapper.getIds();
+       list.stream().forEach(id->{
+           redisTemplate.opsForValue().setBit("skuInfo:bitMap:"+id,1,true);
+       });
+    }
+
+    @Override
+    public List<Long> getAllIds() {
+        //数据很多的时候分页，
+        List<Long> ids = skuInfoMapper.getIds();
+        return ids;
 
     }
 

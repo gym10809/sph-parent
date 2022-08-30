@@ -19,6 +19,8 @@ public interface SkuInfoMapper extends BaseMapper<SkuInfo> {
     void updateBySkuId(@Param("skuId") Long skuId,@Param("isSale")Integer isSale);
 
     List<SkuSaleValueTo> getSkuSaleAndValue(Long spuId);
+
+    List<Long> getIds();
 }
 
 

@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @create 2022/8/28 0028 19:04
  */
 
-public class Object2Json {
+public class Jsons {
     private static ObjectMapper mapper=new ObjectMapper();
     public static String toJson(Object o){
         try {
@@ -17,5 +17,16 @@ public class Object2Json {
         } catch (JsonProcessingException e) {
             return null;
         }
+    }
+
+    public static<T> T toObject(String s,Class<T> tClass){
+
+        try {
+            T t = mapper.readValue(s, tClass);
+            return t;
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+            return null;
     }
 }

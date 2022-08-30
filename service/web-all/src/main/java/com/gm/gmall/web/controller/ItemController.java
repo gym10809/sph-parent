@@ -24,12 +24,16 @@ public class ItemController {
      Result<SkuDetailTo> result= itemFeignClient.getDetail(skuId);
    if (result.isOk()){
        SkuDetailTo skuDetailTo = result.getData();
-       model.addAttribute("categoryView",skuDetailTo.getCategoryView());
-       model.addAttribute("skuInfo",skuDetailTo.getSkuInfo());
-       model.addAttribute("price",skuDetailTo.getPrice());
-       model.addAttribute("spuSaleAttrList",skuDetailTo.getSpuSaleAttrList());
-       model.addAttribute("valuesSkuJson",skuDetailTo.getValuesSkuJson());//json
+       if (skuDetailTo ==null || skuDetailTo.getSkuInfo()==null){
+           return "item/error";
+       }
+           model.addAttribute("categoryView",skuDetailTo.getCategoryView());
+           model.addAttribute("skuInfo",skuDetailTo.getSkuInfo());
+           model.addAttribute("price",skuDetailTo.getPrice());
+           model.addAttribute("spuSaleAttrList",skuDetailTo.getSpuSaleAttrList());
+           model.addAttribute("valuesSkuJson",skuDetailTo.getValuesSkuJson());//json
    }
-    return "item/index";
+   return "item/index";
+
     }
 }

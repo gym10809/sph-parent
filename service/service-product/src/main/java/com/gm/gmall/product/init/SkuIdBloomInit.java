@@ -29,12 +29,12 @@ public class SkuIdBloomInit {
 
     @PostConstruct//对象创建成功以后就启动
     public void bloomInit(){
-     List<Long> list= skuInfoService.getAllIds();
+     List<Integer> list= skuInfoService.getAllIds();
         RBloomFilter<Object> bloomFilter = redissonClient.getBloomFilter(RedisConstant.BLOOM_PRE);
         if (!bloomFilter.isExists())
         bloomFilter.tryInit(1000000,0.01);
-        list.stream().forEach(id->{
+        for (Integer id :list) {
             bloomFilter.add(id);
-     });
+        }
     }
 }

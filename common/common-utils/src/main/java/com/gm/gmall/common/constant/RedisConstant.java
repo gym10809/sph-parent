@@ -8,5 +8,5 @@ package com.gm.gmall.common.constant;
 public class RedisConstant {
     public static String LOCK_PFE="lock:skuInfo:detail:";
     public static String SKU_INFO_PRE="skuInfo:detail:";
-    public static String BLOOM_PRE="bloom:skuId:";
+    public static String BLOOM_PRE="bloom:skuId";
 }

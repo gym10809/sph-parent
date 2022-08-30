@@ -1,9 +1,11 @@
 package com.gm.gmall.item;
 
 import com.gm.gmall.common.annataion.EnableThreadPool;
+import com.gm.gmall.common.config.RedissonAutoConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.cloud.client.SpringCloudApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.annotation.Import;
 
 /**
  * @author gym
@@ -12,6 +14,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @SpringCloudApplication
 @EnableFeignClients
 @EnableThreadPool
+@Import(RedissonAutoConfig.class)
 public class ItemApplication {
     public static void main(String[] args) {
         SpringApplication.run(ItemApplication.class,args);

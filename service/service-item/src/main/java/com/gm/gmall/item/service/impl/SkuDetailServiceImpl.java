@@ -101,7 +101,7 @@ public class SkuDetailServiceImpl implements SkuDetailService {
         if (StringUtils.isEmpty(s)){
             //如果为空则说明缓存中没有
             //从布隆中查询id是否存在
-          boolean contain=  cacheService.bloomContains(skuId);
+          boolean contain= cacheService.bloomContains(skuId);
           if (!contain){
               //布隆没查到必没有
               return null;

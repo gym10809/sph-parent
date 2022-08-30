@@ -3,14 +3,17 @@ package com.gm.gmall.product.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.gm.gmall.common.constant.RedisConstant;
 import com.gm.gmall.common.util.Jsons;
 import com.gm.gmall.model.product.*;
 import com.gm.gmall.model.to.CategoryViewTo;
 import com.gm.gmall.product.mapper.BaseCategory3Mapper;
 import com.gm.gmall.product.mapper.SkuInfoMapper;
 import com.gm.gmall.product.service.*;
+import org.redisson.api.RBloomFilter;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.annotation.Id;
+
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +40,8 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
     BaseCategory3Mapper category3Mapper;
     @Autowired
     SpuSaleAttrService spuSaleAttrService;
+    @Autowired
+    RedissonClient redissonClient;
 
     @Transactional
     @Override
@@ -62,6 +67,8 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
                 saleAttrValue.setSpuId(skuInfo.getSpuId());
         }
         saleAttrValueService.saveBatch(saleAttrValueList);
+        RBloomFilter<Object> bloomFilter = redissonClient.getBloomFilter(RedisConstant.BLOOM_PRE);
+        bloomFilter.add(skuId);
     }
 
     /**
@@ -136,20 +143,11 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
         return Jsons.toJson(skuInfoMapper.getSkuSaleAndValue(spuId));
 
     }
-    @Autowired
-    StringRedisTemplate redisTemplate;
-    @Override
-    public void setBitMap() {
-       List<Long>list= skuInfoMapper.getIds();
-       list.stream().forEach(id->{
-           redisTemplate.opsForValue().setBit("skuInfo:bitMap:"+id,1,true);
-       });
-    }
 
     @Override
-    public List<Long> getAllIds() {
+    public List<Integer> getAllIds() {
         //数据很多的时候分页，
-        List<Long> ids = skuInfoMapper.getIds();
+        List<Integer> ids = skuInfoMapper.getIds();
         return ids;
 
     }

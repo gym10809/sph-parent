@@ -20,7 +20,7 @@ public interface SkuInfoMapper extends BaseMapper<SkuInfo> {
 
     List<SkuSaleValueTo> getSkuSaleAndValue(Long spuId);
 
-    List<Long> getIds();
+    List<Integer> getIds();
 }
 
 

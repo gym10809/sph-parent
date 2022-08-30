@@ -1,8 +1,10 @@
 package com.gm.gmall.product;
 
+import com.gm.gmall.common.config.RedissonAutoConfig;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.cloud.client.SpringCloudApplication;
+import org.springframework.context.annotation.Import;
 
 /**
  * @author gym
@@ -10,6 +12,7 @@ import org.springframework.cloud.client.SpringCloudApplication;
  */
 @MapperScan("com.gm.gmall.product.mapper")
 @SpringCloudApplication
+@Import({RedissonAutoConfig.class})
 public class ProductApplication {
     public static void main(String[] args) {
         SpringApplication.run(ProductApplication.class,args);

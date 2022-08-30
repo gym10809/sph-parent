@@ -1,4 +1,4 @@
-package com.gm.gmall.item.config;
+package com.gm.gmall.common.config;
 
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;

@@ -37,7 +37,7 @@
         GROUP BY short.sku_id
 
     </select>
-    <select id="getIds" resultType="java.lang.Long">
+    <select id="getIds" resultType="java.lang.Integer">
         select id
         from sku_info
     </select>

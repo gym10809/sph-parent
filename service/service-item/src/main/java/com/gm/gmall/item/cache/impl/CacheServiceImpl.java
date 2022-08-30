@@ -3,16 +3,14 @@ package com.gm.gmall.item.cache.impl;
 import com.gm.gmall.common.constant.RedisConstant;
 import com.gm.gmall.common.util.Jsons;
 import com.gm.gmall.item.cache.CacheService;
-import com.gm.gmall.item.config.RedissonAutoConfig;
 import com.gm.gmall.model.to.SkuDetailTo;
-import com.google.common.hash.BloomFilter;
-import com.google.common.hash.Funnels;
+import org.redisson.api.RBloomFilter;
 import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -25,23 +23,16 @@ public class CacheServiceImpl implements CacheService {
     @Autowired
     StringRedisTemplate redisTemplate;
     @Autowired
-    RedissonAutoConfig config;
+    RedissonClient redissonClient;
     @Override
     public String getCache(Integer skuId) {
-        String s = redisTemplate.opsForValue().get("skuInfo:detail:" + skuId);
-        if (s.equals("null")){
-            return null;
-        }
-
-        return s;
+        return   redisTemplate.opsForValue().get("skuInfo:detail:" + skuId);
     }
 
     @Override
     public boolean tryLock(Integer skuId) {
-        RLock lock = config.redissonClient().getLock(RedisConstant.LOCK_PFE + skuId);
-        boolean b = lock.tryLock();
-
-        return b;
+        RLock lock = redissonClient.getLock(RedisConstant.LOCK_PFE + skuId);
+        return  lock.tryLock();
     }
 
     @Override
@@ -57,13 +48,13 @@ public class CacheServiceImpl implements CacheService {
 
     @Override
     public void unLock(Integer skuId) {
-        RLock lock = config.redissonClient().getLock(RedisConstant.LOCK_PFE + skuId);
+        RLock lock = redissonClient.getLock(RedisConstant.LOCK_PFE + skuId);
         lock.unlock();
     }
 
     @Override
     public boolean bloomContains(Integer skuId) {
-
-        return true;
+        RBloomFilter<Object> bloomFilter = redissonClient.getBloomFilter(RedisConstant.BLOOM_PRE);
+        return  bloomFilter.contains(skuId);
     }
 }

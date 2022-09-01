@@ -2,7 +2,8 @@ package com.gm.gmall.item.service.impl;
 
 import com.gm.gmall.common.result.Result;
 import com.gm.gmall.common.util.Jsons;
-import com.gm.gmall.item.cache.CacheService;
+import com.gm.gmall.item.cache.service.CacheService;
+import com.gm.gmall.item.cache.annotation.CacheSkuInfo;
 import com.gm.gmall.item.feign.ItemFeignClient;
 import com.gm.gmall.item.service.SkuDetailService;
 import com.gm.gmall.model.product.SkuImage;
@@ -10,18 +11,13 @@ import com.gm.gmall.model.product.SkuInfo;
 import com.gm.gmall.model.product.SpuSaleAttr;
 import com.gm.gmall.model.to.CategoryViewTo;
 import com.gm.gmall.model.to.SkuDetailTo;
-import com.google.common.hash.BloomFilter;
-import com.google.common.hash.Funnels;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.*;
 
 /**
@@ -40,7 +36,11 @@ public class SkuDetailServiceImpl implements SkuDetailService {
     @Autowired
     CacheService cacheService;
 
-
+    /**
+     * 从数据库查询相关数据
+     * @param skuId
+     * @return
+     */
     public SkuDetailTo getSqlDetail(Integer skuId) {
 //        Result<SkuDetailTo> detail = itemFeignClient.getDetail(skuId);
         SkuDetailTo data = new SkuDetailTo();
@@ -94,8 +94,26 @@ public class SkuDetailServiceImpl implements SkuDetailService {
         return data;
     }
 
+    /**
+     * 优化2.0：使用AOP切面编程
+     */
+    @CacheSkuInfo(skuInfo = "skuInfo:detail:#{#params[0]}"
+            ,bloomName = "bloom:skuId"
+            ,lockName = "lock:skuInfo:detail:#{#params[0]}"
+            ,bloomVal = "#{#params[0]}")
     @Override
-    public SkuDetailTo getDetail(Integer skuId) {
+    public SkuDetailTo getDetail(Integer skuId){
+        SkuDetailTo sqlDetail = getSqlDetail(skuId);
+        if (sqlDetail == null) return null;
+        return sqlDetail;
+    }
+
+    /**
+     * 优化1.0：使用分布式锁、布隆过滤器、缓存等优化
+     * @param skuId
+     * @return
+     */
+    public SkuDetailTo getDetail1(Integer skuId) {
       String s=  cacheService.getCache(skuId);
         SkuDetailTo skuDetailTo =new SkuDetailTo();
         if (StringUtils.isEmpty(s)){

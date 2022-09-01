@@ -1,7 +1,10 @@
 package com.gm.gmall.common.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.lang.reflect.Type;
 
 /**
  * @author gym
@@ -28,5 +31,15 @@ public class Jsons {
             e.printStackTrace();
         }
             return null;
+    }
+    public static Object toObject(String s, TypeReference<Object> t)  {
+
+        Object o = null;
+        try {
+            o = mapper.readValue(s, t);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return o;
     }
 }

@@ -5,6 +5,7 @@ import com.gm.gmall.common.config.RedissonAutoConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.cloud.client.SpringCloudApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 
 /**
@@ -15,6 +16,7 @@ import org.springframework.context.annotation.Import;
 @EnableFeignClients
 @EnableThreadPool
 @Import(RedissonAutoConfig.class)
+@EnableAspectJAutoProxy
 public class ItemApplication {
     public static void main(String[] args) {
         SpringApplication.run(ItemApplication.class,args);

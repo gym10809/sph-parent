@@ -2,8 +2,7 @@ package com.gm.gmall.item.service.impl;
 
 import com.gm.gmall.common.result.Result;
 import com.gm.gmall.common.util.Jsons;
-import com.gm.gmall.item.cache.service.CacheService;
-import com.gm.gmall.item.cache.annotation.CacheSkuInfo;
+
 import com.gm.gmall.item.feign.ItemFeignClient;
 import com.gm.gmall.item.service.SkuDetailService;
 import com.gm.gmall.model.product.SkuImage;
@@ -11,6 +10,8 @@ import com.gm.gmall.model.product.SkuInfo;
 import com.gm.gmall.model.product.SpuSaleAttr;
 import com.gm.gmall.model.to.CategoryViewTo;
 import com.gm.gmall.model.to.SkuDetailTo;
+import com.gm.gmall.starter.cache.annotation.CacheSkuInfo;
+import com.gm.gmall.starter.cache.service.CacheService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;

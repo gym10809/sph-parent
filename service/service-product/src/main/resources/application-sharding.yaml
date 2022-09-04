@@ -1,0 +1,38 @@
+spring:
+  shardingsphere:
+    #配置数据源
+    datasource:
+      names: master,slave_01,slave_02
+      master:
+        type: com.zaxxer.hikari.HikariDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        jdbcUrl: jdbc:mysql://192.168.6.99:3306/gmall_product?serverTimezone=UTC&useSSL=false&useUnicode=true&characterEncoding=UTF-8
+        username: root
+        password: 123456
+      slave_01:
+        type: com.zaxxer.hikari.HikariDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        jdbcUrl: jdbc:mysql://192.168.6.99:3307/gmall_product?serverTimezone=UTC&useSSL=false&useUnicode=true&characterEncoding=UTF-8
+        username: root
+        password: 123456
+      slave_02:
+        type: com.zaxxer.hikari.HikariDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        jdbcUrl: jdbc:mysql://192.168.6.99:3308/gmall_product?serverTimezone=UTC&useSSL=false&useUnicode=true&characterEncoding=UTF-8
+        username: root
+        password: 123456
+    rules:
+      readwrite-splitting:
+       dataSources:
+        myds: # 读写分离逻辑数据源名称
+           type: Static # 读写分离类型，比如：Static，Dynamic
+           props:
+             write-data-source-name: master # 写库数据源名称
+             read-data-source-names: slave_01,slave_02 # 读库数据源名称，多个从数据源用逗号分隔
+             loadBalancerName: owner # 负载均衡算法名称
+    # 负载均衡算法配置
+        load-Balancers:
+          owner:   # 负载均衡算法名称
+             type: ROUND_ROBIN  # 负载均衡算法类型
+    props:
+      sql-show: true

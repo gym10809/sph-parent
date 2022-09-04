@@ -11,3 +11,11 @@ spring:
   thymeleaf:
     prefix: classpath:/templates/
     suffix: .html
+
+feign:
+  client:
+    config:
+      default:
+        readTimeout: 5000
+        connectTimeout: 500
+  #     retryer: 自定义的包全类名，定义重试几次

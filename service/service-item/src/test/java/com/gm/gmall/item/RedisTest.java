@@ -39,7 +39,6 @@ public class RedisTest {
         System.out.println(11111);
         lock.unlock();
     }
-    
     @Test
     public void test2() {
 

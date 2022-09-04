@@ -13,7 +13,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  */
 @MapperScan("com.gm.gmall.product.mapper")
 @SpringCloudApplication
-@Import({RedissonAutoConfig.class})
 @EnableScheduling
 public class ProductApplication {
     public static void main(String[] args) {

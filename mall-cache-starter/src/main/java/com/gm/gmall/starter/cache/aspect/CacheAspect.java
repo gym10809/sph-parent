@@ -49,17 +49,19 @@ public class CacheAspect {
         //解析成对应需要查询的缓存的id
         String bloomName = annotation.bloomName();
         //查询对应的数据
-        String skuInfo =getSkuInfo(joinPoint) ;
-        Object skuInfoDetailTo = cacheService.getCache(skuInfo, returnType);
+        String cacheKey =getSkuInfo(joinPoint) ;
+        Object skuInfoDetailTo = cacheService.getCache(cacheKey, returnType);
         if (skuInfoDetailTo == null){
             //查询布隆过滤器是否数据库有此id的值
             //获取需要布隆过滤器判定的值
             String val = (String) getValue(joinPoint);
             int i = Integer.parseInt(val);
-            boolean contains=  cacheService.bloomContains(bloomName,i);
+            if (!bloomName.isEmpty()){
+                boolean contains=  cacheService.bloomContains(bloomName,i);
           //如果为空，则没有
             if (!contains){
                 return null;
+                 }
             }
             //如果有，准备回源
             //获取对应的锁
@@ -72,11 +74,11 @@ public class CacheAspect {
                     //获取到锁，回源查询数据
                     skuInfoDetailTo = joinPoint.proceed(args);
                     //存缓存
-                    cacheService.saveDetail(skuInfo,skuInfoDetailTo);
+                    cacheService.saveDetail(cacheKey,skuInfoDetailTo);
                     return skuInfoDetailTo;
                 }else {
                     Thread.sleep(1000);
-                    return cacheService.getCache(skuInfo,returnType);
+                    return cacheService.getCache(cacheKey,returnType);
                 }
             } finally {
                 if (ifLock) {
@@ -87,15 +89,6 @@ public class CacheAspect {
 
         return skuInfoDetailTo;
     }
-
-//    private String getRelInfoName(ProceedingJoinPoint joinPoint) {
-//        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-//        Method method = signature.getMethod();
-//        CacheSkuInfo annotation = method.getAnnotation(CacheSkuInfo.class);
-//
-//        return null;
-//    }
-
     /**
      * 获取对应的锁名
      * @param joinPoint
@@ -124,7 +117,7 @@ public class CacheAspect {
         Method method = signature.getMethod();
         //2、拿到注解
        CacheSkuInfo  cacheAnnotation = method.getDeclaredAnnotation(CacheSkuInfo.class);
-        String expression = cacheAnnotation.skuInfo();
+        String expression = cacheAnnotation.redisName();
         //3、根据表达式计算缓存键
         String cacheKey = evaluationExpression(expression,joinPoint,String.class);
         return cacheKey;
@@ -145,8 +138,7 @@ public class CacheAspect {
         Object[] args = joinPoint.getArgs();
         evaluationContext.setVariable("params",args);
         //解析注解表达式
-        String value = parseExpression.getValue(evaluationContext, stringClass);
-        return value;
+        return parseExpression.getValue(evaluationContext, stringClass);
     }
 
     /**
@@ -161,7 +153,6 @@ public class CacheAspect {
         CacheSkuInfo annotation = method.getAnnotation(CacheSkuInfo.class);
         //拿到表达式
         String bloomVal = annotation.bloomVal();
-        String s = evaluationExpression(bloomVal, joinPoint, String.class);
-        return s;
+        return  evaluationExpression(bloomVal, joinPoint, String.class);
     }
 }

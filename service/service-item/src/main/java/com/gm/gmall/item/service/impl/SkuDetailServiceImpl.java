@@ -98,7 +98,7 @@ public class SkuDetailServiceImpl implements SkuDetailService {
     /**
      * 优化2.0：使用AOP切面编程
      */
-    @CacheSkuInfo(skuInfo = "skuInfo:detail:#{#params[0]}"
+    @CacheSkuInfo(redisName = "skuInfo:detail:#{#params[0]}"
             ,bloomName = "bloom:skuId"
             ,lockName = "lock:skuInfo:detail:#{#params[0]}"
             ,bloomVal = "#{#params[0]}")

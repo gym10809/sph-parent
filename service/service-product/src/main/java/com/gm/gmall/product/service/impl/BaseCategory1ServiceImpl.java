@@ -6,6 +6,7 @@ import com.gm.gmall.model.product.BaseCategory1;
 import com.gm.gmall.model.to.IndexTreeTo;
 import com.gm.gmall.product.service.BaseCategory1Service;
 import com.gm.gmall.product.mapper.BaseCategory1Mapper;
+import com.gm.gmall.starter.cache.annotation.CacheSkuInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,8 @@ public class BaseCategory1ServiceImpl extends ServiceImpl<BaseCategory1Mapper, B
     implements BaseCategory1Service{
     @Autowired
     BaseCategory1Mapper baseCategory1Mapper;
-    @Override
+
+    @CacheSkuInfo(redisName = "category:tree")
     public List<IndexTreeTo> indexTree() {
        List<IndexTreeTo> list= baseCategory1Mapper.indexTree();
         return list;

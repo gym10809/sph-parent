@@ -8,6 +8,6 @@ import lombok.Data;
  */
 @Data
 public class SkuSaleValueTo {
-    private Long skuId;
     private String valuesSku;
+    private Long skuId;
 }

@@ -10,6 +10,7 @@ import com.gm.gmall.model.to.CategoryViewTo;
 import com.gm.gmall.product.mapper.BaseCategory3Mapper;
 import com.gm.gmall.product.mapper.SkuInfoMapper;
 import com.gm.gmall.product.service.*;
+import com.gm.gmall.starter.cache.annotation.CacheSkuInfo;
 import org.redisson.api.RBloomFilter;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;

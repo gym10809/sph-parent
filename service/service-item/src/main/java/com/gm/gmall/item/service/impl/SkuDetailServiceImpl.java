@@ -3,7 +3,7 @@ package com.gm.gmall.item.service.impl;
 import com.gm.gmall.common.result.Result;
 import com.gm.gmall.common.util.Jsons;
 
-import com.gm.gmall.item.feign.ItemFeignClient;
+import com.gm.gmall.common.feignClient.product.ProductFeignClient;
 import com.gm.gmall.item.service.SkuDetailService;
 import com.gm.gmall.model.product.SkuImage;
 import com.gm.gmall.model.product.SkuInfo;
@@ -29,7 +29,7 @@ import java.util.concurrent.*;
 public class SkuDetailServiceImpl implements SkuDetailService {
 
     @Autowired
-    ItemFeignClient itemFeignClient;
+    ProductFeignClient productFeignClient;
     @Autowired
     ThreadPoolExecutor executor;
     @Autowired
@@ -47,7 +47,7 @@ public class SkuDetailServiceImpl implements SkuDetailService {
         SkuDetailTo data = new SkuDetailTo();
 
         CompletableFuture<SkuInfo> skuInfoFuture =CompletableFuture.supplyAsync(()->{
-            Result<SkuInfo> result = itemFeignClient.getSkuInfo(skuId);
+            Result<SkuInfo> result = productFeignClient.getSkuInfo(skuId);
             SkuInfo skuInfo = result.getData();
             data.setSkuInfo(skuInfo);
             return skuInfo;
@@ -56,21 +56,21 @@ public class SkuDetailServiceImpl implements SkuDetailService {
         CompletableFuture<Void> spuSaleAttr = skuInfoFuture.thenAcceptAsync(skuInfo -> {
             if (skuInfo!=null){
                 Long spuId = skuInfo.getSpuId();
-                Result<List<SpuSaleAttr>> result = itemFeignClient.getSpuSaleAttrList(spuId, skuId);
+                Result<List<SpuSaleAttr>> result = productFeignClient.getSpuSaleAttrList(spuId, skuId);
                 List<SpuSaleAttr> saleAttrList = result.getData();
                 data.setSpuSaleAttrList(saleAttrList);
             }
         }, executor);
         CompletableFuture<Void> images = skuInfoFuture.thenAcceptAsync(skuInfo -> {
             if (skuInfo!=null) {
-                Result<List<SkuImage>> result = itemFeignClient.getSkuImageList(skuId);
+                Result<List<SkuImage>> result = productFeignClient.getSkuImageList(skuId);
                 List<SkuImage> skuImages = result.getData();
                 skuInfo.setSkuImageList(skuImages);
             }
         }, executor);
         CompletableFuture<Void> categoryView = skuInfoFuture.thenAcceptAsync(skuInfo -> {
             if (skuInfo!=null) {
-                Result<CategoryViewTo> r = itemFeignClient.getCategoryView(skuInfo.getCategory3Id());
+                Result<CategoryViewTo> r = productFeignClient.getCategoryView(skuInfo.getCategory3Id());
                 CategoryViewTo categoryViewTo = r.getData();
                 data.setCategoryView(categoryViewTo);
             }
@@ -78,7 +78,7 @@ public class SkuDetailServiceImpl implements SkuDetailService {
 
         CompletableFuture<Void> json = skuInfoFuture.thenAcceptAsync(skuInfo -> {
             if (skuInfo!=null) {
-                Result<String> result = itemFeignClient.getValuesSkuJson(skuInfo.getSpuId());
+                Result<String> result = productFeignClient.getValuesSkuJson(skuInfo.getSpuId());
                 String s = result.getData();
                 data.setValuesSkuJson(s);
             }

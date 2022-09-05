@@ -2,7 +2,7 @@ package com.gm.gmall.web.controller;
 
 import com.gm.gmall.common.result.Result;
 import com.gm.gmall.model.to.SkuDetailTo;
-import com.gm.gmall.web.feign.ItemFeignClient;
+import com.gm.gmall.common.feignClient.item.ItemFeignClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

@@ -1,10 +1,11 @@
-package com.gm.gmall.item.feign;
+package com.gm.gmall.common.feignClient.product;
 
 import com.gm.gmall.common.result.Result;
 import com.gm.gmall.model.product.SkuImage;
 import com.gm.gmall.model.product.SkuInfo;
 import com.gm.gmall.model.product.SpuSaleAttr;
 import com.gm.gmall.model.to.CategoryViewTo;
+import com.gm.gmall.model.to.IndexTreeTo;
 import com.gm.gmall.model.to.SkuDetailTo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +20,7 @@ import java.util.List;
  */
 @RequestMapping("api/inner/rpc/product")
 @FeignClient("service-product")
-public interface ItemFeignClient {
+public interface ProductFeignClient {
     @GetMapping("/skudetail/{skuId}")
      Result<SkuDetailTo> getDetail(@PathVariable("skuId")Integer skuId);
 
@@ -37,4 +38,7 @@ public interface ItemFeignClient {
 
     @GetMapping("/valuesSkuJson/{spuId}")
     Result<String> getValuesSkuJson(@PathVariable("spuId")Long spuId);
+
+    @GetMapping("/indexTree")
+    Result<List<IndexTreeTo>> tree();
 }

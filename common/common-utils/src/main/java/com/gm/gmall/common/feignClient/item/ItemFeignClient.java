@@ -1,4 +1,4 @@
-package com.gm.gmall.web.feign;
+package com.gm.gmall.common.feignClient.item;
 
 import com.gm.gmall.common.result.Result;
 import com.gm.gmall.model.to.SkuDetailTo;

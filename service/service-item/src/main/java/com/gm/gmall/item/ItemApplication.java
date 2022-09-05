@@ -13,7 +13,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
  * @create 2022/8/26 0026 21:18
  */
 @SpringCloudApplication
-@EnableFeignClients
+@EnableFeignClients(basePackages = "com.gm.gmall.common.feignClient.product")
 @EnableThreadPool
 @EnableAspectJAutoProxy
 public class ItemApplication {

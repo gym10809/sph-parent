@@ -2,7 +2,11 @@ package com.gm.gmall.product.mapper;
 
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.gm.gmall.model.list.SearchAttr;
 import com.gm.gmall.model.product.SkuAttrValue;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
 * @author Administrator
@@ -12,6 +16,7 @@ import com.gm.gmall.model.product.SkuAttrValue;
 */
 public interface SkuAttrValueMapper extends BaseMapper<SkuAttrValue> {
 
+    List<SearchAttr> getSkuAttrNameAndValue(@Param("skuId") Long skuId);
 }
 
 

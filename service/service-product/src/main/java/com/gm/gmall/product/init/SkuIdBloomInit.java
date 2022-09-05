@@ -34,7 +34,7 @@ public class SkuIdBloomInit {
         if (!bloomFilter.isExists())
         bloomFilter.tryInit(1000000,0.01);
         for (Integer id :list) {
-            bloomFilter.add(id);
+            bloomFilter.add(""+id);
         }
     }
 }

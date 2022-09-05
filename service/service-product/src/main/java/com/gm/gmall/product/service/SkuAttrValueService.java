@@ -2,7 +2,10 @@ package com.gm.gmall.product.service;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.gm.gmall.model.list.SearchAttr;
 import com.gm.gmall.model.product.SkuAttrValue;
+
+import java.util.List;
 
 /**
 * @author Administrator
@@ -11,4 +14,5 @@ import com.gm.gmall.model.product.SkuAttrValue;
 */
 public interface SkuAttrValueService extends IService<SkuAttrValue> {
 
+    List<SearchAttr> getSkuAttrNameAndValue(Long skuId);
 }

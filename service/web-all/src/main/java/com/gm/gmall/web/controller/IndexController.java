@@ -1,8 +1,8 @@
 package com.gm.gmall.web.controller;
 
+import com.gm.gmall.common.feignClient.product.ProductFeignClient;
 import com.gm.gmall.common.result.Result;
 import com.gm.gmall.model.to.IndexTreeTo;
-import com.gm.gmall.web.feign.IndexTreeFeignClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,7 +19,7 @@ import java.util.List;
 public class IndexController {
 
     @Autowired
-    IndexTreeFeignClient treeFeignClient;
+    ProductFeignClient treeFeignClient;
     @GetMapping({"/", "/index"})
     public String index(Model model){
         Result<List<IndexTreeTo>> tree = treeFeignClient.tree();

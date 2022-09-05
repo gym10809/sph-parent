@@ -10,7 +10,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  * @create 2022/8/26 0026 9:18
  */
 @SpringCloudApplication
-@EnableFeignClients
+@EnableFeignClients(basePackages = "com.gm.gmall.common.feignClient")
 public class WebAllApplication {
     public static void main(String[] args) {
         SpringApplication.run(WebAllApplication.class,args);

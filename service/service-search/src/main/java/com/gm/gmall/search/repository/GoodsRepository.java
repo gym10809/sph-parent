@@ -8,4 +8,5 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
  * @create 2022/9/3 0003 18:25
  */
 public interface GoodsRepository extends ElasticsearchRepository<Goods,Long> {
+    Goods findByTmName(String key);
 }

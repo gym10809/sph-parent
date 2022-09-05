@@ -4,7 +4,10 @@ package com.gm.gmall.product.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gm.gmall.common.constant.RedisConstant;
+import com.gm.gmall.common.feignClient.search.SearchFeignClient;
 import com.gm.gmall.common.util.Jsons;
+import com.gm.gmall.model.list.Goods;
+import com.gm.gmall.model.list.SearchAttr;
 import com.gm.gmall.model.product.*;
 import com.gm.gmall.model.to.CategoryViewTo;
 import com.gm.gmall.product.mapper.BaseCategory3Mapper;
@@ -19,6 +22,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -43,6 +47,10 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
     SpuSaleAttrService spuSaleAttrService;
     @Autowired
     RedissonClient redissonClient;
+    @Autowired
+    BaseTrademarkService baseTrademarkService;
+    @Autowired
+    SearchFeignClient searchFeignClient;
 
     @Transactional
     @Override
@@ -79,11 +87,38 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
     @Override
     public void onSale(Long skuId) {
         skuInfoMapper.updateBySkuId(skuId,1);
+        //保存信息至es中
+        SkuInfo skuInfo = skuInfoMapper.selectById(skuId);
+        Goods goods=new Goods();
+        goods.setId(skuId);
+        goods.setDefaultImg(skuInfo.getSkuDefaultImg());
+        goods.setTitle(skuInfo.getSkuName());
+        goods.setPrice(skuInfo.getPrice().doubleValue());
+        goods.setCreateTime(new Date());
+        goods.setTmId(skuInfo.getTmId());
+        //获取品牌信息
+        BaseTrademark baseTrademark = baseTrademarkService.getById(skuInfo.getTmId());
+        goods.setTmName(baseTrademark.getTmName());
+        goods.setTmLogoUrl(baseTrademark.getLogoUrl());
+        //获取三级分类的信息
+        CategoryViewTo categoryView = category3Mapper.getCategoryView(skuInfo.getCategory3Id());
+        goods.setCategory1Id(categoryView.getCategory1Id());
+        goods.setCategory1Name(categoryView.getCategory1Name());
+        goods.setCategory2Id(categoryView.getCategory2Id());
+        goods.setCategory2Name(categoryView.getCategory2Name());
+        goods.setCategory3Id(categoryView.getCategory3Id());
+        goods.setCategory3Name(categoryView.getCategory3Name());
+        goods.setHotScore(0L);//热度，有前台计算点击数
+        //查询平台属性，集合
+        List<SearchAttr> list= attrValueService.getSkuAttrNameAndValue(skuId);
+        goods.setAttrs(list);
+        searchFeignClient.save(goods);
     }
     @Override
     public void cancelSale(Long skuId) {
-
         skuInfoMapper.updateBySkuId(skuId,0);
+        //从es中删除信息
+        searchFeignClient.del(skuId);
     }
 
 //    @Override

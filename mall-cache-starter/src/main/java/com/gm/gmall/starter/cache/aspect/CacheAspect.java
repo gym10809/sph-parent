@@ -55,9 +55,8 @@ public class CacheAspect {
             //查询布隆过滤器是否数据库有此id的值
             //获取需要布隆过滤器判定的值
             String val = (String) getValue(joinPoint);
-            int i = Integer.parseInt(val);
             if (!bloomName.isEmpty()){
-                boolean contains=  cacheService.bloomContains(bloomName,i);
+                boolean contains=  cacheService.bloomContains(bloomName,val);
           //如果为空，则没有
             if (!contains){
                 return null;

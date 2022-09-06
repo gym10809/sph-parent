@@ -6,3 +6,13 @@ spring:
   elasticsearch:
     rest:
       uris: http://192.168.6.99:9200
+thread:
+  param:
+    core: 4
+    max: 8
+    queueSize: 100
+    keepAliveTime: 300
+logging:
+  level:
+    tracer: trace  #打开追踪器
+    org.elasticsearch: trace

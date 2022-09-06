@@ -9,7 +9,7 @@ public class SearchAttr {
     // 平台属性Id
     @Field(type = FieldType.Long)
     private Long attrId;
-    // 平台属性值名称
+    // 平台属性名的值
     @Field(type = FieldType.Keyword)
     private String attrValue;
     // 平台属性名

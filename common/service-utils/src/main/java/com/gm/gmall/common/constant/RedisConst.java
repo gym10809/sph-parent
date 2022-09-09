@@ -38,5 +38,5 @@ public class RedisConst {
     public static final int SECKILL__TIMEOUT = 60 * 60 * 1;
 
 
-    public static final Object LOGIN_USER = "login:user:";
+
 }

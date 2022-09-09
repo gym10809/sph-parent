@@ -1,0 +1,10 @@
+server:
+  port: 13001
+spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+  main:
+    allow-bean-definition-overriding: true
+logging:
+  level:
+    tracer: trace  #打开追踪器

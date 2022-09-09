@@ -4,8 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import com.gm.gmall.common.constant.RedisConst;
-import com.gm.gmall.common.result.Result;
-import com.gm.gmall.common.result.ResultCodeEnum;
+import com.gm.gmall.common.constant.RedisConstant;
 import com.gm.gmall.common.util.Jsons;
 import com.gm.gmall.common.util.MD5;
 import com.gm.gmall.login.service.UserInfoService;
@@ -14,8 +13,8 @@ import com.gm.gmall.model.user.UserInfo;
 import com.gm.gmall.model.vo.LoginSuccessVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
-import springfox.documentation.spring.web.json.Json;
 
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -30,11 +29,11 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo>
     implements UserInfoService{
 
     @Autowired
-    RedisTemplate redisTemplate;
+    StringRedisTemplate redisTemplate;
     @Override
-    public LoginSuccessVo login(String loginName, String passwd) {
+    public LoginSuccessVo login(UserInfo info) {
         LambdaQueryWrapper<UserInfo> queryWrapper=new LambdaQueryWrapper<>();
-        queryWrapper.eq(UserInfo::getLoginName,loginName).eq(UserInfo::getPasswd, MD5.encrypt(passwd));
+        queryWrapper.eq(UserInfo::getLoginName,info.getLoginName()).eq(UserInfo::getPasswd, MD5.encrypt(info.getPasswd()));
         UserInfo userInfo = baseMapper.selectOne(queryWrapper);
         LoginSuccessVo vo=new LoginSuccessVo();
         if (userInfo!=null){
@@ -42,10 +41,15 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo>
             vo.setToken(token);
             vo.setNickName(userInfo.getNickName());
             //存缓存
-            redisTemplate.opsForValue().set(RedisConst.LOGIN_USER+token, Jsons.toJson(userInfo),7, TimeUnit.DAYS);
+            redisTemplate.opsForValue().set(RedisConstant.LOGIN_USER +token, Jsons.toJson(userInfo),7, TimeUnit.DAYS);
 
         }
         return vo;
+    }
+
+    @Override
+    public void logout(String token) {
+        redisTemplate.delete(RedisConstant.LOGIN_USER+token);
     }
 }
 

@@ -3,12 +3,10 @@ package com.gm.gmall.login.controller;
 import com.gm.gmall.common.result.Result;
 import com.gm.gmall.common.result.ResultCodeEnum;
 import com.gm.gmall.login.service.UserInfoService;
+import com.gm.gmall.model.user.UserInfo;
 import com.gm.gmall.model.vo.LoginSuccessVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author gym
@@ -21,12 +19,17 @@ public class LoginController {
     @Autowired
     UserInfoService userInfoService;
     @PostMapping("/passport/login")
-    public Result login(@RequestParam("loginName")String loginName,@RequestParam("passwd")String passwd){
-      LoginSuccessVo vo= userInfoService.login(loginName,passwd);
+    public Result login(@RequestBody UserInfo info) {
+      LoginSuccessVo vo= userInfoService.login(info);
         if (vo==null){
             //登录失败
             return Result.build("", ResultCodeEnum.LOGIN_ERRO);
         }
         return Result.ok(vo);
+    }
+    @GetMapping("/passport/logout")
+    public Result logout(@RequestHeader("token")String token){
+        userInfoService.logout(token);
+        return Result.ok();
     }
 }

@@ -17,6 +17,7 @@
         <module>service-item</module>
         <module>service-search</module>
         <module>service-login</module>
+        <module>service-cart</module>
     </modules>
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

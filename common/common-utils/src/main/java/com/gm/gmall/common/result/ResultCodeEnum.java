@@ -15,6 +15,9 @@ public enum ResultCodeEnum {
 
     PAY_RUN(205, "支付中"),
 
+    SIZE_OVER_FLOW(1345,"超出购物车数量限制"),
+    NUM_OUT_OF_RANGE(1346,"超过单个商品的数量上限"),
+
     LOGIN_ERRO(2081, "登录失败"),
     LOGIN_AUTH(208, "未登陆"),
     PERMISSION(209, "没有权限"),

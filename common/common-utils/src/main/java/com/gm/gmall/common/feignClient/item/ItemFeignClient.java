@@ -17,4 +17,6 @@ public interface ItemFeignClient {
 
     @GetMapping("/skudetail/{skuId}")
     Result<SkuDetailTo> getDetail(@PathVariable("skuId")Integer skuId);
+
+
 }

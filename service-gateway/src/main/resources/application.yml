@@ -25,6 +25,10 @@ spring:
           uri: lb://service-login
           predicates:
             - Path=/api/user/**
+        - id: cart_route
+          uri: lb://service-cart
+          predicates:
+            - Path=/api/cart/**
         - id: web-all_route
           uri: lb://web-all
           predicates:
@@ -32,3 +36,16 @@ spring:
   redis:
     host: 192.168.6.99
     password: gm123456
+app:
+  auth:
+    no-auth-url:
+      - /css/**
+      - /js/**
+      - /img/**
+      - /login.html
+      - /api/user/passport/login
+    login-page: http://passport.gmall.com/login.html
+    login-url:
+      - /order/**
+    reject-url:
+      - /api/inner/**

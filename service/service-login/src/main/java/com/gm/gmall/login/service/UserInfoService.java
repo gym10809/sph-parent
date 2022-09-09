@@ -12,5 +12,7 @@ import com.gm.gmall.model.vo.LoginSuccessVo;
 */
 public interface UserInfoService extends IService<UserInfo> {
 
-    LoginSuccessVo login(String loginName, String passwd);
+    LoginSuccessVo login(UserInfo info);
+
+    void logout(String token);
 }

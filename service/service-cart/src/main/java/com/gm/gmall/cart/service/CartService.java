@@ -13,4 +13,10 @@ public interface CartService {
     SkuInfo addCart(Long skuId, Integer skuNum);
 
     List<CartInfo> cartLiat();
+
+    void addToCart(Long skuId, Integer num);
+
+    void checkCart(Long skuId, Integer status);
+
+    void deleteCart(Long skuId);
 }

@@ -101,7 +101,7 @@ public class GlobalUserFilter implements GlobalFilter {
         //到此为普通请求
         String token = getToken(request);
         String info = redisTemplate.opsForValue().get(RedisConstant.LOGIN_USER + token);
-        if (token!=null && StringUtils.isEmpty(info)){
+        if (!StringUtils.isEmpty(token) && StringUtils.isEmpty(info)){
             //跳转至登录界面
             ServerHttpResponse response = getServerHttpResponse(location,exchange);
             return response.setComplete();

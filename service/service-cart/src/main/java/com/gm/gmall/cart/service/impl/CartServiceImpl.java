@@ -119,6 +119,7 @@ public class CartServiceImpl implements CartService {
         UserInfoId infoId = getInfoId();
         BoundHashOperations<String, String, String> ops = redisTemplate.boundHashOps(RedisConstant.PRE_CART + infoId.getUserTempId());
         List<CartInfo> cartInfos = getCartInfos(ops);
+        //todo 更新价格
         if (infoId.getUserId()!=null){
             //用户购物车
             //绑定用户购物车
@@ -127,10 +128,9 @@ public class CartServiceImpl implements CartService {
             Long size = ops.size();
             if (size>0){
                 //合并临时购物车到用户购物车中
-                //todo 合并，删除不了临时里的数据
                     for (CartInfo cartInfo : cartInfos) {
                         addTemp2User(cartInfo,infoId);
-                       redisTemplate.opsForHash().delete(RedisConstant.PRE_CART+infoId.getUserTempId(), Jsons.toJson(cartInfo));
+                      ops.delete(cartInfo.getSkuId().toString());
                     }
             }
             //查询用户购物车
@@ -142,12 +142,49 @@ public class CartServiceImpl implements CartService {
         }
     }
 
+    @Override
+    public void addToCart(Long skuId, Integer num) {
+        //判定是哪个cacheKey
+        UserInfoId infoId = getInfoId();
+        String cacheKey = getCacheKey(infoId);
+        BoundHashOperations<String, String, String> ops = redisTemplate.boundHashOps(cacheKey);
+        String cartString = ops.get(skuId.toString());
+        CartInfo cartInfo = Jsons.toObject(cartString, CartInfo.class);
+        cartInfo.setSkuNum(cartInfo.getSkuNum()+num);
+        //取出改变数量后，再放进去
+        ops.put(skuId.toString(),Jsons.toJson(cartInfo));
+    }
+
+    @Override
+    public void checkCart(Long skuId, Integer status) {
+        UserInfoId infoId = getInfoId();
+        String cacheKey = getCacheKey(infoId);
+        BoundHashOperations<String, String, String> ops = redisTemplate.boundHashOps(cacheKey);
+        String cartString = ops.get(skuId.toString());
+        CartInfo cartInfo = Jsons.toObject(cartString, CartInfo.class);
+        cartInfo.setIsChecked(status);
+        ops.put(skuId.toString(),Jsons.toJson(cartInfo));
+    }
+
+    @Override
+    public void deleteCart(Long skuId) {
+        UserInfoId infoId = getInfoId();
+        String cacheKey = getCacheKey(infoId);
+        BoundHashOperations<String, String, String> ops= redisTemplate.boundHashOps(cacheKey);
+        ops.delete(skuId.toString());
+    }
+
     private void addTemp2User(CartInfo cartInfo,UserInfoId infoId ) {
         BoundHashOperations<String, String, String> userOps= redisTemplate.boundHashOps(RedisConstant.PRE_CART +infoId.getUserId());
-
         if (userOps.size()+1<RedisConstant.MAX_SIZE){
-            userOps.put(cartInfo.getSkuId().toString(),Jsons.toJson(cartInfo));
-
+            String c = userOps.get(cartInfo.getSkuId().toString());
+            if (c!=null){
+                CartInfo cartInfo1 = Jsons.toObject(c, CartInfo.class);
+                cartInfo1.setSkuNum(cartInfo1.getSkuNum()+cartInfo.getSkuNum());
+                userOps.put(cartInfo.getSkuId().toString(),Jsons.toJson(cartInfo1));
+            }else {
+                userOps.put(cartInfo.getSkuId().toString(),Jsons.toJson(cartInfo));
+            }
         }else {
             throw new GmallException(ResultCodeEnum.SIZE_OVER_FLOW);
         }

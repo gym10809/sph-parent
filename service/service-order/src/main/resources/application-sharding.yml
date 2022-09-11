@@ -1,0 +1,142 @@
+spring:
+  shardingsphere:
+    props:
+      sql-show: true
+    datasource:
+      names: order_0_m,order_0_s1,order_0_s2,order_1_m,order_1_s1,order_1_s2
+      #配置order_0主从库:
+      order_0_m:
+        type: com.zaxxer.hikari.HikariDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        jdbcUrl: jdbc:mysql://192.168.6.99:3306/gmall_order_0?useSSL=false
+        username: root
+        password: 123456
+      order_0_s1:
+        type: com.zaxxer.hikari.HikariDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        jdbcUrl: jdbc:mysql://192.168.6.99:3307/gmall_order_0?useSSL=false
+        username: root
+        password: 123456
+      order_0_s2:
+        type: com.zaxxer.hikari.HikariDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        jdbcUrl: jdbc:mysql://192.168.6.99:3308/gmall_order_0?useSSL=false
+        username: root
+        password: 123456
+      #配置order_1主从库
+      order_1_m:
+        type: com.zaxxer.hikari.HikariDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        jdbcUrl: jdbc:mysql://192.168.6.99:3306/gmall_order_1?useSSL=false
+        username: root
+        password: 123456
+      order_1_s1:
+        type: com.zaxxer.hikari.HikariDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        jdbcUrl: jdbc:mysql://192.168.6.99:3307/gmall_order_1?useSSL=false
+        username: root
+        password: 123456
+      order_1_s2:
+        type: com.zaxxer.hikari.HikariDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        jdbcUrl: jdbc:mysql://192.168.6.99:3308/gmall_order_1?useSSL=false
+        username: root
+        password: 123456
+      #配置读写分离：
+    rules:
+      readwrite-splitting:
+        dataSources:
+          order0: # 读写分离逻辑数据源名称   order_0库的读写分离
+            type: Static # 读写分离类型，比如：Static，Dynamic
+            props:
+              write-data-source-name: order_0_m # 写库数据源名称
+              read-data-source-names: order_0_s1,order_0_s2 # 读库数据源名称，多个从数据源用逗号分隔
+              loadBalancerName: owner # 负载均衡算法名称
+          order1: # 读写分离逻辑数据源名称  order_1的读写分离
+            type: Static # 读写分离类型，比如：Static，Dynamic
+            props:
+              write-data-source-name: order_1_m # 写库数据源名称
+              read-data-source-names: order_1_s1,order_1_s2 # 读库数据源名称，多个从数据源用逗号分隔
+              loadBalancerName: owner # 负载均衡算法名称
+          # 负载均衡算法配置
+          load-Balancers:
+            owner: # 负载均衡算法名称
+              type: ROUND_ROBIN  # 负载均衡算法类型
+      #配置分库分表策略
+        #分库策略
+      sharding:
+        default-database-strategy:
+          standard:
+            sharding-algorithm-name: user_id_mod
+            sharding-column: user_id
+        binging-tables:  #绑定相关的表,保证相关信息不会出现跨库情形
+          - order_info,order_detail
+          - order_info,order_status_log
+          - order_info,payment_info
+        #定义分表的策略
+        tables:
+          # 逻辑源与对应的真实表;
+          order_info:
+            actual-data-nodes: order$->{0..1}.order_info_$->{0..2}
+            table-strategy:
+              standard:
+                sharding-column: user_id
+                sharding-algorithm-name: user_id_mod3_oi
+            key-generate-strategy:
+              column: id
+              key-generator-name: xuehua
+          order_detail:
+            actual-data-nodes: order$->{0..1}.order_detail_$->{0..2}
+            table-strategy:
+              standard:
+                sharding-column: user_id
+                sharding-algorithm-name: user_id_mod3_od
+            key-generate-strategy: #主键生成策略
+              column: id
+              key-generator-name: xuehua
+          order_status_log:
+            actual-data-nodes: order$->{0..1}.order_status_log_$->{0..2}
+            table-strategy:
+              standard:
+                sharding-column: user_id
+                sharding-algorithm-name: user_id_mod3_os
+            key-generate-strategy: #主键生成策略
+              column: id
+              key-generator-name: xuehua
+          payment_info:
+            actual-data-nodes: order$->{0..1}.payment_info_$->{0..2}
+            table-strategy:
+              standard:
+                sharding-column: user_id
+                sharding-algorithm-name: user_id_mod3_pi
+            key-generate-strategy: #主键生成策略
+              column: id
+              key-generator-name: xuehua
+        #配置对应的分片算法
+        sharding-algorithms:
+          user_id_mod:
+            type: INLINE
+            props: # 0,1
+              algorithm-expression: order$->{user_id % 2}
+          user_id_mod3_oi:
+            type: INLINE
+            props:
+              algorithm-expression: order_info_$->{user_id % 3}
+          user_id_mod3_od:
+            type: INLINE
+            props:
+              algorithm-expression: order_info_$->{user_id % 3}
+          user_id_mod3_os:
+            type: INLINE
+            props:
+              algorithm-expression: order_info_$->{user_id % 3}
+          user_id_mod3_pi:
+            type: INLINE
+            props:
+              algorithm-expression: order_info_$->{user_id % 3}
+        #配置对应的主键生成策略
+        key-generators:
+          xuehua:
+            type: SNOWFLAKE
+            props:
+              worker-id: ${random.int(1000)}

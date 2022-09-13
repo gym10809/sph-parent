@@ -18,18 +18,4 @@ import javax.servlet.http.HttpServletRequest;
 @Configuration
 public class WebAllConfig {
 
-    @Bean
-    public RequestInterceptor userRequsetInterceptor(){
-
-        return (template -> {
-           //获取老请求中的
-            ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-            HttpServletRequest request = requestAttributes.getRequest();
-            String userId = request.getHeader(RedisConstant.USERID);
-            String tempId = request.getHeader(RedisConstant.TEMPID);
-            template.header(RedisConstant.TEMPID,tempId);
-            template.header(RedisConstant.USERID,userId);
-        });
-
-    }
 }

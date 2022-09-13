@@ -125,15 +125,15 @@ spring:
           user_id_mod3_od:
             type: INLINE
             props:
-              algorithm-expression: order_info_$->{user_id % 3}
+              algorithm-expression: order_detail_$->{user_id % 3}
           user_id_mod3_os:
             type: INLINE
             props:
-              algorithm-expression: order_info_$->{user_id % 3}
+              algorithm-expression: order_status_log_$->{user_id % 3}
           user_id_mod3_pi:
             type: INLINE
             props:
-              algorithm-expression: order_info_$->{user_id % 3}
+              algorithm-expression: payment_info_$->{user_id % 3}
         #配置对应的主键生成策略
         key-generators:
           xuehua:

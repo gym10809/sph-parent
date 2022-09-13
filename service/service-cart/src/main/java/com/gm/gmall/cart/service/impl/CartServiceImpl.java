@@ -1,6 +1,7 @@
 package com.gm.gmall.cart.service.impl;
 
 import com.gm.gmall.cart.service.CartService;
+import com.gm.gmall.common.auth.AuthUtils;
 import com.gm.gmall.common.constant.RedisConstant;
 import com.gm.gmall.common.execption.GmallException;
 import com.gm.gmall.common.feignClient.product.ProductFeignClient;
@@ -172,6 +173,21 @@ public class CartServiceImpl implements CartService {
         String cacheKey = getCacheKey(infoId);
         BoundHashOperations<String, String, String> ops= redisTemplate.boundHashOps(cacheKey);
         ops.delete(skuId.toString());
+    }
+
+    /**
+     * 得到选中的商品
+     * @return
+     */
+    @Override
+    public List<CartInfo> geCheck() {
+        UserInfoId info = AuthUtils.getInfo();
+        String cacheKey = getCacheKey(info);
+        BoundHashOperations<String, String, String> ops = redisTemplate.boundHashOps(cacheKey);
+        List<String> values = ops.values();
+        List<CartInfo> collect = values.stream().map(value -> Jsons.toObject(value, CartInfo.class))
+                .filter(cartInfo -> cartInfo.getIsChecked() == 1).collect(Collectors.toList());
+        return collect;
     }
 
     private void addTemp2User(CartInfo cartInfo,UserInfoId infoId ) {

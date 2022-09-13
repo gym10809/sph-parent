@@ -11,6 +11,7 @@ public class RedisConstant {
     public static final String PRE_CART = "user:cart:";
     public static final long MAX_SIZE = 200;
     public static final int MAX_NUM = 99;
+    public static final String TRADE_NO = "user:trade:";
     public static String LOCK_PFE="lock:skuInfo:detail:";
     public static String SKU_INFO_PRE="skuInfo:detail:";
     public static String BLOOM_PRE="bloom:skuId";

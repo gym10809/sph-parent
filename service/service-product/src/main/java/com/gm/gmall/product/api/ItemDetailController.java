@@ -12,6 +12,7 @@ import com.gm.gmall.product.service.SkuInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -86,5 +87,11 @@ public class ItemDetailController {
     Result<String> getValuesSkuJson(@PathVariable("spuId")Long spuId){
        String s=  infoService.getValuesSkuJson(spuId);
        return Result.ok(s);
+    }
+
+    @GetMapping("/getPrice/{skuId}")
+    public Result<BigDecimal> getPrice(@PathVariable("skuId")Long skuId){
+      BigDecimal price=   infoService.getPrice(skuId);
+        return Result.ok(price);
     }
 }

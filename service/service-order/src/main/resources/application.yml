@@ -9,6 +9,8 @@ spring:
     password: 123456
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.jdbc.Driver
+  profiles:
+    include: sharding
 logging:
   level:
     tracer: trace  #打开追踪器

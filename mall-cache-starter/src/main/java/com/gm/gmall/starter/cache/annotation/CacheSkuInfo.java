@@ -11,7 +11,6 @@ import java.lang.annotation.*;
 @Documented
 public @interface CacheSkuInfo {
     String bloomName() default "";//设置对应的布隆过滤器的名字
-
     String redisName() default "";//需要查询的redis名字
     String lockName() default ""; //锁的名字
     String bloomVal() default ""; //查询的布隆的值

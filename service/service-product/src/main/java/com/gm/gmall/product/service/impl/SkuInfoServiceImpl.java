@@ -22,6 +22,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -186,6 +187,12 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
         List<Integer> ids = skuInfoMapper.getIds();
         return ids;
 
+    }
+
+    @Override
+    public BigDecimal getPrice(Long skuId) {
+        SkuInfo skuInfo = baseMapper.selectById(skuId);
+        return skuInfo.getPrice();
     }
 
 }

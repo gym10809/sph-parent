@@ -19,4 +19,7 @@ public interface CartService {
     void checkCart(Long skuId, Integer status);
 
     void deleteCart(Long skuId);
+
+    List<CartInfo> geCheck();
+
 }

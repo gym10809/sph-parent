@@ -8,6 +8,7 @@ import com.gm.gmall.model.product.SpuSaleAttr;
 import com.gm.gmall.model.to.CategoryViewTo;
 import com.gm.gmall.model.to.SkuDetailTo;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -36,4 +37,5 @@ public interface SkuInfoService extends IService<SkuInfo> {
 
     List<Integer> getAllIds();
 
+    BigDecimal getPrice(Long skuId);
 }

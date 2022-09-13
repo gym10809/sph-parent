@@ -8,7 +8,7 @@ spring:
     password: 123456
     driver-class-name: com.mysql.jdbc.Driver
   profiles:
-    active: sharding
+    include: sharding
 minio:
   endpoint: http://192.168.6.99:9000
   accessKey: admin

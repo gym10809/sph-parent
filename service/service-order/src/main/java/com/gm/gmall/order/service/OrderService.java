@@ -1,6 +1,8 @@
 package com.gm.gmall.order.service;
 
 import com.gm.gmall.model.vo.order.OrderDataVo;
+import com.gm.gmall.model.vo.order.OrderMsg;
+import com.gm.gmall.model.vo.order.OrderSubmitVo;
 
 /**
  * @author gym
@@ -9,4 +11,8 @@ import com.gm.gmall.model.vo.order.OrderDataVo;
 public interface OrderService {
     OrderDataVo getData();
     String getTradeNo();
+    boolean checkToken(String tradeNo);
+    String submit(String tradeNo, OrderSubmitVo orderSubmitVo);
+
+    void closeOrder(OrderMsg orderMsg);
 }

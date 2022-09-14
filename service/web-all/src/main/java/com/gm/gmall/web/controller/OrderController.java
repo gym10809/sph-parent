@@ -21,11 +21,17 @@ public class OrderController {
     public String order(Model model){
         Result<OrderDataVo> data = orderFeignClient.getData();
         OrderDataVo orderDataVo = data.getData();
+        //商品信息
         model.addAttribute("detailArrayList",orderDataVo.getDetailArrayList());
+        //商品数量
         model.addAttribute("totalNum",orderDataVo.getTotalNum());
+        //商品总金额
         model.addAttribute("totalAmount",orderDataVo.getTotalAmount());
+        //用户地址
         model.addAttribute("userAddressList",orderDataVo.getUserAddressList());
+        //用户交易号
         model.addAttribute("tradeNo",orderDataVo.getTradeNo());
+
         return "order/trade";
     }
 }

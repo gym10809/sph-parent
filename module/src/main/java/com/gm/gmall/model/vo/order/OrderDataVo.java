@@ -17,4 +17,5 @@ public class OrderDataVo {
     private BigDecimal totalAmount;//购买总价
     private List<UserAddress> userAddressList;//地址
     private String tradeNo;//订单号
+
 }

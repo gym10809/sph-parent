@@ -14,5 +14,7 @@ public class OrderDetailVo {
     private String skuName;
     private Integer skuNm;
     private BigDecimal orderPrice;
-    private Integer skuId;
+    private Long skuId;
+
+    private String hasStock = "1";
 }

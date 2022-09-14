@@ -72,7 +72,6 @@ spring:
         binging-tables:  #绑定相关的表,保证相关信息不会出现跨库情形
           - order_info,order_detail
           - order_info,order_status_log
-          - order_info,payment_info
         #定义分表的策略
         tables:
           # 逻辑源与对应的真实表;

@@ -190,6 +190,14 @@ public class CartServiceImpl implements CartService {
         return collect;
     }
 
+    @Override
+    public void deleteChecked() {
+        List<CartInfo> cartInfos = geCheck();
+        BoundHashOperations<String, String, String> ops= redisTemplate.boundHashOps(getCacheKey(AuthUtils.getInfo()));
+        List<String> collect = cartInfos.stream().map(cartInfo -> cartInfo.getSkuId().toString()).collect(Collectors.toList());
+        ops.delete(collect.toArray());
+    }
+
     private void addTemp2User(CartInfo cartInfo,UserInfoId infoId ) {
         BoundHashOperations<String, String, String> userOps= redisTemplate.boundHashOps(RedisConstant.PRE_CART +infoId.getUserId());
         if (userOps.size()+1<RedisConstant.MAX_SIZE){

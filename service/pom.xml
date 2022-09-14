@@ -27,6 +27,11 @@
 
 
     <dependencies>
+        <dependency>
+            <groupId>com.gm.sph-parent.common</groupId>
+            <artifactId>rabbitmq-utils</artifactId>
+            <version>1.0</version>
+        </dependency>
         <!--依赖服务的工具类-->
         <dependency>
             <groupId>com.gm.sph-parent</groupId>

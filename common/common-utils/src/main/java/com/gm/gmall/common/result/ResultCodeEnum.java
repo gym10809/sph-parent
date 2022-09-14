@@ -31,8 +31,10 @@ public enum ResultCodeEnum {
     SECKILL_ILLEGAL(217, "请求不合法"),
     SECKILL_ORDER_SUCCESS(218, "下单成功"),
     COUPON_GET(220, "优惠券已经领取"),
-    COUPON_LIMIT_GET(221, "优惠券已发放完毕");
-
+    COUPON_LIMIT_GET(221, "优惠券已发放完毕"),
+    TOKEN_INVALID(3001,"订单创建失效，请重新创建" ),
+    NUM_NOT_ENOUGH(3002, "商品库存不足"),
+    MISMATCH(3003,"价格不匹配");
     private Integer code;
 
     private String message;

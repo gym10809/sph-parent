@@ -2,7 +2,12 @@ package com.gm.gmall.order.service;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.gm.gmall.model.enums.ProcessStatus;
 import com.gm.gmall.model.order.OrderInfo;
+import com.gm.gmall.model.vo.order.OrderMsg;
+import com.gm.gmall.model.vo.order.OrderSubmitVo;
+
+import java.util.List;
 
 /**
 * @author Administrator
@@ -11,4 +16,7 @@ import com.gm.gmall.model.order.OrderInfo;
 */
 public interface OrderInfoService extends IService<OrderInfo> {
 
+    String saveOrder(String tradeNo, OrderSubmitVo orderSubmitVo);
+
+    void closeOrder(OrderMsg orderMsg, ProcessStatus closed, List<String> judge);
 }

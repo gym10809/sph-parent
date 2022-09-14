@@ -11,6 +11,19 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
   profiles:
     include: sharding
+  rabbitmq:
+    host: 192.168.6.99
+    port: 5672
+    password: admin
+    username: admin
+    virtual-host: /
+    listener:
+      type: SIMPLE
+      simple:
+        acknowledge-mode: manual
+
+    publisher-returns: true
+    publisher-confirm-type: SIMPLE
 logging:
   level:
     tracer: trace  #打开追踪器

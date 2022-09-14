@@ -3,6 +3,9 @@ package com.gm.gmall.order.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.gm.gmall.model.order.OrderInfo;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
 * @author Administrator
@@ -12,6 +15,7 @@ import com.gm.gmall.model.order.OrderInfo;
 */
 public interface OrderInfoMapper extends BaseMapper<OrderInfo> {
 
+    void upDateOrderStatus(@Param("orderId") Long orderId,@Param("userId")Long userId, @Param("status") String status,@Param("judge") List<String> judge);
 }
 
 

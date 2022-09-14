@@ -12,6 +12,7 @@
         <module>module</module>
         <module>service</module>
         <module>service-gateway</module>
+        <module>ware-manage</module>
     </modules>
     <packaging>pom</packaging>
     <properties>

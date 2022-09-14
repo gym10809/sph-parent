@@ -24,4 +24,6 @@ public interface CartFeignClient {
     @GetMapping("/getCheck")
      Result<List<CartInfo>> getCheck();
 
+    @GetMapping("/deleteChecked")
+    void deleteChecked();
 }

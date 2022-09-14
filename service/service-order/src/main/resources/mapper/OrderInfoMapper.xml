@@ -41,4 +41,14 @@
         operate_time,activity_reduce_amount,coupon_amount,
         original_total_amount,feight_fee,refundable_time
     </sql>
+    <update id="upDateOrderStatus">
+        update order_info set
+            order_status=#{status},
+            process_status=#{status}
+        where id=#{orderId}  and user_id=#{userId}
+        and order_status in
+        <foreach collection="judge" item="sta" open="(" close=")" separator=",">
+            #{sta}
+        </foreach>
+    </update>
 </mapper>

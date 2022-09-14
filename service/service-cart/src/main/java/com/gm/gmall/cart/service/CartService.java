@@ -22,4 +22,6 @@ public interface CartService {
 
     List<CartInfo> geCheck();
 
+    void deleteChecked();
+
 }

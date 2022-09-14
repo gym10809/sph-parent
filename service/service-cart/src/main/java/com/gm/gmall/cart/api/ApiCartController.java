@@ -35,4 +35,9 @@ public class ApiCartController {
       List<CartInfo> list= cartService.geCheck();
       return Result.ok(list);
     }
+    @GetMapping("/deleteChecked")
+    public Result deleteChecked(){
+        cartService.deleteChecked();
+        return Result.ok();
+    }
 }

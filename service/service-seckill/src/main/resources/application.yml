@@ -1,14 +1,16 @@
 server:
-  port: 14001
+  port: 16001
 spring:
   main:
     allow-bean-definition-overriding: true
   datasource:
-    url: jdbc:mysql://192.168.6.99:3306/gmall_order?userSSL=false
+    url: jdbc:mysql://192.168.6.99:3306/gmall_activity?userSSL=false
     username: root
     password: 123456
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.jdbc.Driver
+  profiles:
+    include: sharding
   rabbitmq:
     host: 192.168.6.99
     port: 5672

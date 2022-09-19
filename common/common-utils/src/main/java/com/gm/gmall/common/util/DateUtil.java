@@ -2,6 +2,7 @@ package com.gm.gmall.common.util;
 
 import org.apache.commons.lang.time.DateUtils;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -12,6 +13,24 @@ import java.util.Date;
 public class DateUtil {
 
     private static final String dateFormat = "yyyy-MM-dd";
+    private static final String format = "yyyy-MM-dd HH:mm:ss";
+
+
+    /**
+     * 解析
+     * @param notify_time
+     * @param s
+     * @return
+     */
+    public static Date parseDate(String notify_time, String s)  {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(s);
+        try {
+            return simpleDateFormat.parse(notify_time);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     /**
      * 获取两个时间差 单位：秒
@@ -33,6 +52,11 @@ public class DateUtil {
         SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
         return sdf.format(date);
 
+    }
+
+    public static String format(Date date){
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        return sdf.format(date);
     }
 
     /**

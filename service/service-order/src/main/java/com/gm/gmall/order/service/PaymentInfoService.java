@@ -4,6 +4,8 @@ package com.gm.gmall.order.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gm.gmall.model.payment.PaymentInfo;
 
+import java.util.Map;
+
 /**
 * @author Administrator
 * @description 针对表【payment_info(支付信息表)】的数据库操作Service
@@ -11,4 +13,5 @@ import com.gm.gmall.model.payment.PaymentInfo;
 */
 public interface PaymentInfoService extends IService<PaymentInfo> {
 
+    PaymentInfo savePayment(Map<String, String> map);
 }

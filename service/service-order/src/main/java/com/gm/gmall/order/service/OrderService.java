@@ -1,8 +1,8 @@
 package com.gm.gmall.order.service;
 
-import com.gm.gmall.model.vo.order.OrderDataVo;
-import com.gm.gmall.model.vo.order.OrderMsg;
-import com.gm.gmall.model.vo.order.OrderSubmitVo;
+import com.gm.gmall.model.vo.order.*;
+
+import java.util.List;
 
 /**
  * @author gym
@@ -15,4 +15,6 @@ public interface OrderService {
     String submit(String tradeNo, OrderSubmitVo orderSubmitVo);
 
     void closeOrder(OrderMsg orderMsg);
+
+    List<WareChildOrderVo> splitOrder(OrderSplitVo orderSplitVo);
 }

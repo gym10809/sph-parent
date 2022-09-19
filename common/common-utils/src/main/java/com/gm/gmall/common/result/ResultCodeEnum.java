@@ -34,7 +34,8 @@ public enum ResultCodeEnum {
     COUPON_LIMIT_GET(221, "优惠券已发放完毕"),
     TOKEN_INVALID(3001,"订单创建失效，请重新创建" ),
     NUM_NOT_ENOUGH(3002, "商品库存不足"),
-    MISMATCH(3003,"价格不匹配");
+    MISMATCH(3003,"价格不匹配"),
+    TRADE_EXPIRE(3004,"订单已过期" );
     private Integer code;
 
     private String message;

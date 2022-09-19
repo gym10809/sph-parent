@@ -19,4 +19,10 @@ public interface OrderInfoService extends IService<OrderInfo> {
     String saveOrder(String tradeNo, OrderSubmitVo orderSubmitVo);
 
     void closeOrder(OrderMsg orderMsg, ProcessStatus closed, List<String> judge);
+
+    OrderInfo getByUserIdAndTrade(String out_trade_no, long parseLong);
+
+    void changeStatus(Long orderId, Long userId, ProcessStatus paid, List<ProcessStatus> asList);
+
+    OrderInfo getByUserIdAndOrderId(Long userId, Long orderId);
 }

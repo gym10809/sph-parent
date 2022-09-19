@@ -21,7 +21,6 @@ spring:
       type: SIMPLE
       simple:
         acknowledge-mode: manual
-
     publisher-returns: true
     publisher-confirm-type: SIMPLE
 logging:

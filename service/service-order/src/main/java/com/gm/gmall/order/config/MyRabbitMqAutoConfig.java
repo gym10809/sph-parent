@@ -54,4 +54,20 @@ public class MyRabbitMqAutoConfig {
     public Binding bindDeadQueueExchange(@Qualifier("exchange") Exchange exchange, @Qualifier("deadQueue") Queue queue){
         return BindingBuilder.bind(queue).to(exchange).with(RabbitConstant.ORDER_DELAY_RK).noargs();
     }
+
+    /**
+     * 创建已支付的队列
+     */
+    @Bean
+    public Queue payedQueue(){
+        return QueueBuilder.durable(RabbitConstant.ORDER_PAYED_QUEUE).build();
+    }
+
+    /**
+     *绑定支付成功队列和交换机
+     */
+    @Bean
+    public Binding bindPayedQueueExchange(@Qualifier("exchange") Exchange exchange,@Qualifier("payedQueue")Queue queue){
+        return BindingBuilder.bind(queue).to(exchange).with(RabbitConstant.ORDER_PAYED_RK).noargs();
+    }
 }

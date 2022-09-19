@@ -32,6 +32,7 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilde
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -49,6 +50,7 @@ public class GoodsServiceImpl implements GoodsService {
     ElasticsearchRestTemplate restTemplate;
     @Autowired
     ThreadPoolExecutor executor;
+
 
     @Override
     public void save(Goods goods) {

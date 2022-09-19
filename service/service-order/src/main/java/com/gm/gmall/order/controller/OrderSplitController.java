@@ -1,10 +1,9 @@
 package com.gm.gmall.order.controller;
 
-import com.gm.gmall.common.result.Result;
 import com.gm.gmall.model.vo.order.OrderSplitVo;
-import com.gm.gmall.model.vo.order.OrderSubmitVo;
 import com.gm.gmall.model.vo.order.WareChildOrderVo;
 import com.gm.gmall.order.service.OrderService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,22 +11,19 @@ import java.util.List;
 
 /**
  * @author gym
- * @create 2022/9/14 0014 0:20
+ * @create 2022/9/18 0018 21:59
  */
+@Slf4j
 @RequestMapping("/api/order")
 @RestController
-public class OrderController {
-
+public class OrderSplitController {
     @Autowired
     OrderService orderService;
-    @PostMapping("/auth/submitOrder")
-    public Result  submitOrder(@RequestParam("tradeNo") String tradeNo,
-                               @RequestBody OrderSubmitVo orderSubmitVo){
-
-        String orderId = orderService.submit(tradeNo,orderSubmitVo);
-        return Result.ok(orderId);
+    /**
+     * 拆单,仓库不同，或者次仓库暂时无货
+     */
+    @PostMapping("/orderSplit")
+    public List<WareChildOrderVo> split( OrderSplitVo orderSplitVo){
+        return  orderService.splitOrder(orderSplitVo);
     }
-
-
-
 }

@@ -32,14 +32,14 @@ public class Jsons {
         }
             return null;
     }
-    public static Object toObject(String s, TypeReference<Object> t)  {
+    public static <T> T toObject(String s, TypeReference<T> t)  {
 
-        Object o = null;
+        T t1 = null;
         try {
-            o = mapper.readValue(s, t);
+            t1 = mapper.readValue(s, t);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        return o;
+        return t1;
     }
 }

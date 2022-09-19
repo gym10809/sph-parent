@@ -43,10 +43,10 @@
     </sql>
     <update id="upDateOrderStatus">
         update order_info set
-            order_status=#{status},
-            process_status=#{status}
+            order_status=#{orderStatus},
+            process_status=#{processStatus}
         where id=#{orderId}  and user_id=#{userId}
-        and order_status in
+        and process_status in
         <foreach collection="judge" item="sta" open="(" close=")" separator=",">
             #{sta}
         </foreach>

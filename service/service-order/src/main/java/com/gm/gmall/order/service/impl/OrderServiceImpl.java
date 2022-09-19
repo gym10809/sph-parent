@@ -1,5 +1,7 @@
 package com.gm.gmall.order.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.gm.gmall.common.auth.AuthUtils;
 import com.gm.gmall.common.constant.RedisConstant;
 import com.gm.gmall.common.execption.GmallException;
@@ -9,16 +11,16 @@ import com.gm.gmall.common.feignClient.user.UserFeignClient;
 import com.gm.gmall.common.feignClient.ware.WareFeignClient;
 import com.gm.gmall.common.result.Result;
 import com.gm.gmall.common.result.ResultCodeEnum;
+import com.gm.gmall.common.util.Jsons;
 import com.gm.gmall.model.cart.CartInfo;
 import com.gm.gmall.model.enums.OrderStatus;
 import com.gm.gmall.model.enums.ProcessStatus;
+import com.gm.gmall.model.order.OrderDetail;
 import com.gm.gmall.model.order.OrderInfo;
 import com.gm.gmall.model.user.UserAddress;
-import com.gm.gmall.model.vo.order.OrderDataVo;
-import com.gm.gmall.model.vo.order.OrderDetailVo;
-import com.gm.gmall.model.vo.order.OrderMsg;
-import com.gm.gmall.model.vo.order.OrderSubmitVo;
+import com.gm.gmall.model.vo.order.*;
 import com.gm.gmall.model.vo.user.UserInfoId;
+import com.gm.gmall.order.service.OrderDetailService;
 import com.gm.gmall.order.service.OrderInfoService;
 import com.gm.gmall.order.service.OrderService;
 import com.mchange.v1.identicator.IdList;
@@ -30,10 +32,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -59,6 +58,8 @@ public class OrderServiceImpl implements OrderService {
     WareFeignClient wareFeignClient;
     @Autowired
     OrderInfoService orderInfoService;
+    @Autowired
+    OrderDetailService orderDetailService;
     /**
      * 查询选中的商品信息
      * @return 0
@@ -187,7 +188,6 @@ public class OrderServiceImpl implements OrderService {
 //            closeOrder(Long.getLong(orderId));
 //        },45,TimeUnit.MINUTES);
 
-
         return orderId;
 
     }
@@ -201,6 +201,91 @@ public class OrderServiceImpl implements OrderService {
         judge.add(ProcessStatus.UNPAID.name());
         //利用cas，判断关闭订单
         orderInfoService.closeOrder(orderMsg,closed,judge);
+    }
+
+    /**
+     * 根据仓库拆分订单
+     * @param orderSplitVo
+     * @return
+     */
+    @Override
+    public List<WareChildOrderVo> splitOrder(OrderSplitVo orderSplitVo) {
+        Long orderId = orderSplitVo.getOrderId();
+        //获得总订单
+        OrderInfo orderInfo = orderInfoService.getById(orderId);
+        List<OrderDetail> details = orderDetailService.getOrderDetails(orderId,orderInfo.getUserId());
+        orderInfo.setOrderDetailList(details);
+        //根据仓库分类
+        List<WareMapItem> items = Jsons.toObject(orderSplitVo.getWareSkuMap(), new TypeReference<List<WareMapItem>>(){});
+        //拆分子订单
+        List<OrderInfo> childOrders = items.stream().map(wareMapItem -> {
+            OrderInfo child = getChild(orderInfo, wareMapItem);
+            return child;
+        }).collect(Collectors.toList());
+        //修改父定单状态
+        orderInfoService.changeStatus(orderId,orderInfo.getUserId(),ProcessStatus.SPLIT,Arrays.asList(ProcessStatus.PAID));
+        //返回需要的数据
+        List<WareChildOrderVo> wareChildOrderVoList = childOrders.stream().map(orderInfo1 -> {
+            WareChildOrderVo childOrderVo = new WareChildOrderVo();
+            childOrderVo.setOrderId(orderInfo1.getId());
+            childOrderVo.setConsignee(orderInfo1.getConsignee());
+            childOrderVo.setConsigneeTel(orderInfo1.getConsigneeTel());
+            childOrderVo.setOrderComment(orderInfo1.getOrderComment());
+            childOrderVo.setOrderBody(orderInfo1.getTradeBody());
+            childOrderVo.setDeliveryAddress(orderInfo1.getDeliveryAddress());
+            childOrderVo.setPaymentWay("2");
+            childOrderVo.setWareId(orderInfo1.getWareId());
+            List<WareChildOrderDetailItemVo> collect = orderInfo1.getOrderDetailList().stream().map(orderDetail -> {
+                WareChildOrderDetailItemVo vo = new WareChildOrderDetailItemVo();
+                vo.setSkuId(orderDetail.getSkuId());
+                vo.setSkuNum(orderDetail.getSkuNum());
+                vo.setSkuName(orderDetail.getSkuName());
+                return vo;
+            }).collect(Collectors.toList());
+            childOrderVo.setDetails(collect);
+            return childOrderVo;
+        }).collect(Collectors.toList());
+        return wareChildOrderVoList;
+    }
+
+    private OrderInfo getChild(OrderInfo orderInfo, WareMapItem wareMapItem) {
+        //封装成子订单
+        List<Long> skuIds = wareMapItem.getSkuIds();
+        OrderInfo child = new OrderInfo();
+        child.setConsignee(orderInfo.getConsignee());
+        child.setConsigneeTel(orderInfo.getConsigneeTel());
+        child.setParentOrderId(orderInfo.getId());
+        //获取子订单的详细信息
+        List<OrderDetail> childDetails = orderInfo.getOrderDetailList().stream().
+                filter(orderDetail -> skuIds.contains(orderDetail.getSkuId()))
+                .collect(Collectors.toList());
+        BigDecimal totalAmount = childDetails.stream().
+                map(detail -> detail.getOrderPrice().multiply(new BigDecimal(detail.getSkuNum()))).
+                reduce(BigDecimal::add).get();
+        child.setTotalAmount(totalAmount);
+        child.setOrderStatus(orderInfo.getOrderStatus());
+        child.setUserId(orderInfo.getUserId());
+        child.setPaymentWay(orderInfo.getPaymentWay());
+        child.setDeliveryAddress(orderInfo.getDeliveryAddress());
+        child.setOrderComment(orderInfo.getOrderComment());
+        child.setOutTradeNo(orderInfo.getOutTradeNo());
+        child.setTradeBody(childDetails.get(0).getSkuName());
+        child.setCreateTime(new Date());
+        child.setExpireTime(orderInfo.getExpireTime());
+        child.setProcessStatus(orderInfo.getProcessStatus());
+
+        child.setTrackingNo("");
+        child.setParentOrderId(orderInfo.getId());
+        child.setImgUrl(childDetails.get(0).getImgUrl());
+        child.setOrderDetailList(childDetails);
+        child.setWareId(wareMapItem.getWareId().toString());
+        child.setProvinceId(0L);
+        child.setRefundableTime(orderInfo.getRefundableTime());
+        child.setOperateTime(new Date());
+        orderInfoService.save(child);
+        childDetails.stream().forEach(childDetail->childDetail.setOrderId(orderInfo.getId()));
+        orderDetailService.saveBatch(childDetails);
+        return child;
     }
 //    @Scheduled(cron = "0 */5 * * * ?")
 //    public void closeOrder(Long orderId){

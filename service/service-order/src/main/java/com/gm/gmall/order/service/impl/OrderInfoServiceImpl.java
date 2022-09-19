@@ -1,6 +1,7 @@
 package com.gm.gmall.order.service.impl;
 import java.math.BigDecimal;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.gm.gmall.common.auth.AuthUtils;
 import com.gm.gmall.common.constant.RedisConstant;
 import com.gm.gmall.common.util.Jsons;
@@ -26,6 +27,7 @@ import com.gm.gmall.order.mapper.OrderInfoMapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
 * @author Administrator
@@ -110,10 +112,39 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 
     @Override
     public void closeOrder(OrderMsg orderMsg, ProcessStatus closed, List<String> judge) {
-        String status=closed.name();
+        String processStatus=closed.name();
+        String orderStatus=closed.getOrderStatus().name();
         //更改订单的状态
-        orderInfoMapper.upDateOrderStatus(orderMsg.getOrderId(),orderMsg.getUserId(),status,judge);
+        orderInfoMapper.upDateOrderStatus(orderMsg.getOrderId(),orderMsg.getUserId(),orderStatus,processStatus,judge);
     }
+
+    @Override
+    public OrderInfo getByUserIdAndTrade(String out_trade_no, long parseLong) {
+        OrderInfo one = getOne(new LambdaQueryWrapper<OrderInfo>().
+                eq(OrderInfo::getUserId, parseLong).
+                eq(OrderInfo::getOutTradeNo, out_trade_no));
+
+        return one;
+
+    }
+    @Transactional
+    @Override
+    public void changeStatus(Long orderId, Long userId, ProcessStatus paid, List<ProcessStatus> asList) {
+        String orderStatus = paid.getOrderStatus().name();
+       String processStatus=paid.name();
+        List<String> list = asList.stream().map(processStatus1 -> processStatus1.name()).collect(Collectors.toList());
+        orderInfoMapper.upDateOrderStatus(orderId,userId,orderStatus,processStatus,list);
+
+    }
+
+    @Override
+    public OrderInfo getByUserIdAndOrderId(Long userId, Long orderId) {
+        OrderInfo one = getOne(new LambdaQueryWrapper<OrderInfo>().
+                eq(OrderInfo::getUserId, userId).
+                eq(OrderInfo::getId, orderId));
+        return one;
+    }
+
 }
 
 

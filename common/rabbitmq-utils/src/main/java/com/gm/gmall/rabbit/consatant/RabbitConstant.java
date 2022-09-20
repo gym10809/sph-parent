@@ -26,4 +26,8 @@ public class RabbitConstant {
     public static final String EXCHANGE_WARE_ORDER = "exchange.direct.ware.order";
     //库存扣减路由键
     public static final String RK_WARE_ORDER = "ware.order";
+    //秒杀交换机
+    public static final String EXCHANGE_SECKILL = "seckill-exchange";
+    //秒杀路由键
+    public static final String SECKILL_DEC_RK = "seckill-dec-queue";
 }

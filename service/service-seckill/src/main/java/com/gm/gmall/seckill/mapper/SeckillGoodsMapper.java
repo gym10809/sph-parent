@@ -3,6 +3,9 @@ package com.gm.gmall.seckill.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.gm.gmall.model.activity.SeckillGoods;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
 * @author Administrator
@@ -12,6 +15,9 @@ import com.gm.gmall.model.activity.SeckillGoods;
 */
 public interface SeckillGoodsMapper extends BaseMapper<SeckillGoods> {
 
+    List<SeckillGoods> getList(@Param("date") String date);
+
+    void dscStock(@Param("skuId") Long skuId);
 }
 
 

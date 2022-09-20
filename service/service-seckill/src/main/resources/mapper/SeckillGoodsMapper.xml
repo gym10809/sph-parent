@@ -29,4 +29,15 @@
         status,start_time,end_time,
         num,stock_count,sku_desc
     </sql>
+    <update id="dscStock">
+        update seckill_goods set stock_count=stock_count-1
+        where sku_id = #{skuId}
+    </update>
+    <select id="getList" resultType="com.gm.gmall.model.activity.SeckillGoods">
+        select *
+        from seckill_goods
+        where #{date}
+        between DATE_FORMAT(start_time, '%Y-%m-%d') and
+                  DATE_FORMAT(end_time, '%Y-%m-%d')
+    </select>
 </mapper>

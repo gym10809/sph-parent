@@ -1,5 +1,7 @@
 spring:
   shardingsphere:
+    mode:
+      type: Memory
     props:
       sql-show: true
     datasource:

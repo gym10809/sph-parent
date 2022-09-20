@@ -14,6 +14,10 @@ public class RedisConstant {
     public static final String ORDER_TEMP_TOKEN = "order:token:";
     public static final int ORDER_EXPIRE = 60 * 45*1000;
     public static final String MQ_TEMP = "rabbit:temp:";
+    public static final String SECKILL_GOODS = "seckill:goods:";//秒杀商品
+    public static final String SECKILL_GOODS_STOCK = "seckill:goods:stock:";
+    public static final String SECKILL_CODE = "seckill:code:";
+    public static final String SECKILL_ORDER = "seckill:order:";
     public static String LOCK_PFE="lock:skuInfo:detail:";
     public static String SKU_INFO_PRE="skuInfo:detail:";
     public static String BLOOM_PRE="bloom:skuId";

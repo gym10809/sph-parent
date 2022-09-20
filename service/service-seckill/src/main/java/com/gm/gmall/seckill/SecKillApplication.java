@@ -3,6 +3,7 @@ package com.gm.gmall.seckill;
 import com.gm.gmall.common.annataion.EnableException;
 import com.gm.gmall.common.annataion.EnableFeignInterceptor;
 import com.gm.gmall.rabbit.annotation.EnableRabbitMqTemplate;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.cloud.client.SpringCloudApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
@@ -16,6 +17,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @EnableFeignInterceptor
 @EnableException
 @EnableRabbitMqTemplate
+@MapperScan("com.gm.gmall.seckill.mapper")
 public class SecKillApplication {
     public static void main(String[] args) {
         SpringApplication.run(SecKillApplication.class,args);

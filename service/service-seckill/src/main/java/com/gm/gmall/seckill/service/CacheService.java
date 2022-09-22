@@ -1,6 +1,7 @@
 package com.gm.gmall.seckill.service;
 
 import com.gm.gmall.model.activity.SeckillGoods;
+import com.gm.gmall.model.to.SeckillOrderMsg;
 
 import java.util.List;
 

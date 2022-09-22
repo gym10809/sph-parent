@@ -2,10 +2,12 @@ package com.gm.gmall.common.feignClient.seckill;
 
 import com.gm.gmall.common.result.Result;
 import com.gm.gmall.model.activity.SeckillGoods;
+import com.gm.gmall.model.to.SeckillOrderMsg;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -21,4 +23,7 @@ public interface SeckillFeignClient {
 
     @GetMapping("/goods/detail/{skuId}")
     Result<SeckillGoods> getOne(@PathVariable("skuId") Long skuId);
+
+    @GetMapping("/payOrderMsg/")
+    Result<SeckillOrderMsg> getOrdedrMsg(@RequestParam("skuId") Long skuId);
 }

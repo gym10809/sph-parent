@@ -2,6 +2,9 @@ package com.gm.gmall.seckill.controller;
 
 import com.gm.gmall.common.result.Result;
 import com.gm.gmall.common.result.ResultCodeEnum;
+import com.gm.gmall.model.order.OrderInfo;
+import com.gm.gmall.model.to.SeckillOrderMsg;
+import com.gm.gmall.model.to.SeckillOrderSub;
 import com.gm.gmall.seckill.service.SeckillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -35,6 +38,22 @@ public class SeckillController {
     public Result seckill(@PathVariable("skuId")Long skuId,
                           @RequestParam("skuIdStr")String skuIdStr){
          ResultCodeEnum codeEnum= service.seckillOrder(skuId,skuIdStr);
-        return Result.build("123",codeEnum);
+        return Result.build("",codeEnum);
+    }
+
+    /**
+     * 判断秒杀状态
+     * @param skuId
+     * @return
+     */
+    @GetMapping("/checkOrder/{skuId}")
+    public Result checkOrder(@PathVariable("skuId")Long skuId){
+        ResultCodeEnum codeEnum=service.checkOrder(skuId);
+        return Result.build("",codeEnum);
+    }
+    @PostMapping("/submitOrder")
+    public Result submit(@RequestBody OrderInfo orderInfo){
+        Long orderId=service.submit(orderInfo);
+        return Result.ok(orderId);
     }
 }

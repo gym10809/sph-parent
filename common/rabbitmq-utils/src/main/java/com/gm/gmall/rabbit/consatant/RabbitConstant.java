@@ -29,5 +29,6 @@ public class RabbitConstant {
     //秒杀交换机
     public static final String EXCHANGE_SECKILL = "seckill-exchange";
     //秒杀路由键
-    public static final String SECKILL_DEC_RK = "seckill-dec-queue";
+    public static final String SECKILL_DEC_RK = "seckill-dec-queue-rk";
+    public static final String SECKILL_QUEUE = "seckill-queue";
 }

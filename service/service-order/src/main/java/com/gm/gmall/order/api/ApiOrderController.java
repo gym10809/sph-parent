@@ -40,4 +40,10 @@ public class ApiOrderController {
         OrderInfo orderInfo = orderInfoService.getById(orderId);
         return Result.ok(orderInfo);
     }
+
+    @PostMapping("/submit")
+    public Result<Long> submit(@RequestBody OrderInfo orderInfo){
+          orderInfoService.save(orderInfo);
+          return Result.ok(orderInfo.getId());
+    }
 }

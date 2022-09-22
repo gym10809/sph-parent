@@ -1,9 +1,15 @@
 package com.gm.gmall.seckill.service.impl;
+import java.math.BigDecimal;
+
+import com.gm.gmall.common.auth.AuthUtils;
+import com.gm.gmall.model.vo.user.UserInfoId;
+import com.google.common.collect.Lists;
 
 import com.gm.gmall.common.constant.RedisConstant;
 import com.gm.gmall.common.util.DateUtil;
 import com.gm.gmall.common.util.Jsons;
 import com.gm.gmall.model.activity.SeckillGoods;
+import com.gm.gmall.model.to.SeckillOrderMsg;
 import com.gm.gmall.seckill.service.CacheService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundHashOperations;
@@ -118,5 +124,6 @@ public class CacheServiceImpl implements CacheService {
         }
         return goods;
     }
+
 
 }

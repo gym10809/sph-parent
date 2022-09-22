@@ -28,10 +28,12 @@ public class ScheduledSeckill {
     /**
      * 每天凌晨更新当天的秒杀商品,商品库存、、、、
      */
-    @Scheduled(cron = "0 0 2 * * ?")
+//    @Scheduled(cron = "0 0 2 * * ?")
+    @Scheduled(cron = "0 * * * * ?")
     public void updateSeckillGoods(){
         List<SeckillGoods> seckillGoods = service.getList();
         //当天的秒杀商品存入redis中,商品库存、本地缓存商品
+        log.info("开始同步秒杀商品");
         cacheService.cache(seckillGoods);
     }
 

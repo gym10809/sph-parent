@@ -3,6 +3,7 @@ package com.gm.gmall.web.controller;
 import com.gm.gmall.common.feignClient.seckill.SeckillFeignClient;
 import com.gm.gmall.common.result.Result;
 import com.gm.gmall.model.activity.SeckillGoods;
+import com.gm.gmall.model.to.SeckillOrderMsg;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -60,5 +61,16 @@ public class SecKillController {
             model.addAttribute("skuId",skuId);
             model.addAttribute("skuIdStr",skuIdStr);
         return "seckill/queue";
+    }
+
+    @GetMapping("/seckill/trade.html")
+    public String trade(Model model,@RequestParam("skuId")String skuId){
+        SeckillOrderMsg seckillOrderMsg=  seckillFeignClient.getOrdedrMsg(Long.parseLong(skuId)).getData();
+        model.addAttribute("userAddressList",seckillOrderMsg.getUserAddressListList());
+        model.addAttribute("totalAmount",seckillOrderMsg.getTotalAmount());
+        model.addAttribute("totalNum",1);
+        model.addAttribute("detailArrayList",seckillOrderMsg.getDetailArrayList());
+
+        return "seckill/trade";
     }
 }

@@ -14,4 +14,5 @@ import lombok.NoArgsConstructor;
 public class SeckillMqMsg {
     private Long skuId;
     private Long userId;
+    private String skuIdStr;
 }
